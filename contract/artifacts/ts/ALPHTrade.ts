@@ -44,7 +44,6 @@ export namespace ALPHTradeTypes {
     supply: bigint;
     usdcId: HexString;
     balance: bigint;
-    balanceInCirculation: bigint;
     liquidity: bigint;
   };
 
@@ -245,7 +244,7 @@ export const ALPHTrade = new Factory(
   Contract.fromJson(
     ALPHTradeContractJson,
     "",
-    "7119a14f242ced6f3210b171a8412b57d90494ddc3897301fda732c807438efb",
+    "0d9954ab0d50ea80c73491531163b77f3f562e4797dfab8cd0ec60fb3c6949e5",
     AllStructs
   )
 );

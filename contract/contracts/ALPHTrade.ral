@@ -5,7 +5,6 @@ Contract ALPHTrade(
     supply: U256,
     usdcId: ByteVec,
     mut balance: U256,
-    mut balanceInCirculation: U256,
     mut liquidity: U256
 ) implements IFungibleToken {
     pub fn getTotalSupply() -> U256 {
@@ -39,15 +38,13 @@ Contract ALPHTrade(
     @using(assetsInContract = true, preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
     pub fn deposit(usdcAmount: U256) -> () {
         if(liquidity == 0) {
-            balanceInCirculation = usdcAmount
             liquidity = usdcAmount
             balance = balance - usdcAmount
 
             transferTokenToSelf!(callerAddress!(), usdcId, usdcAmount)
             transferTokenFromSelf!(callerAddress!(), selfTokenId!(), usdcAmount)
         } else {
-            let lpAmount = usdcAmount / liquidity * balanceInCirculation
-            balanceInCirculation = balanceInCirculation + lpAmount
+            let lpAmount = usdcAmount / liquidity * (u256Max!() - balance)
             liquidity = liquidity + usdcAmount
             balance = balance - lpAmount
 
@@ -58,8 +55,7 @@ Contract ALPHTrade(
 
     @using(assetsInContract = true, preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
     pub fn withdraw(lpAmount: U256) -> () {
-        let usdcAmount = lpAmount * 10 ** 6 / balanceInCirculation * liquidity / 10 ** 6
-        balanceInCirculation = balanceInCirculation - lpAmount
+        let usdcAmount = lpAmount * 10 ** 6 / (u256Max!() - balance) * liquidity / 10 ** 6
         liquidity = liquidity - usdcAmount
         balance = balance + lpAmount
 

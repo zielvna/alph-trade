@@ -23,14 +23,12 @@ describe('liquidity tests', () => {
     await mint(USDC, ONE_TOKEN, signer)
 
     const balanceBefore = (await alphTrade.fetchState()).fields.balance
-    const balanceInCirculationBefore = (await alphTrade.fetchState()).fields.balanceInCirculation
     const liquidityBefore = (await alphTrade.fetchState()).fields.liquidity
     const alphTradeLpBalanceBefore = await balanceOf(alphTrade.contractId, alphTrade.address)
     const alphTradeUSDCBalanceBefore = await balanceOf(USDC.contractId, alphTrade.address)
     const signerLpBalanceBefore = await balanceOf(alphTrade.contractId, signer.address)
     const signerUSDCBalanceBefore = await balanceOf(USDC.contractId, signer.address)
     expect(balanceBefore).toBe(MAX_VALUE)
-    expect(balanceInCirculationBefore).toBe(0n)
     expect(liquidityBefore).toBe(0n)
     expect(alphTradeLpBalanceBefore).toBe(MAX_VALUE)
     expect(alphTradeUSDCBalanceBefore).toBe(0n)
@@ -40,14 +38,12 @@ describe('liquidity tests', () => {
     await deposit(alphTrade, ONE_TOKEN, signer)
 
     const balance = (await alphTrade.fetchState()).fields.balance
-    const balanceInCirculation = (await alphTrade.fetchState()).fields.balanceInCirculation
     const liquidity = (await alphTrade.fetchState()).fields.liquidity
     const alphTradeLpBalance = await balanceOf(alphTrade.contractId, alphTrade.address)
     const alphTradeUSDCBalance = await balanceOf(USDC.contractId, alphTrade.address)
     const signerLpBalance = await balanceOf(alphTrade.contractId, signer.address)
     const signerUSDCBalance = await balanceOf(USDC.contractId, signer.address)
     expect(balance).toBe(MAX_VALUE - ONE_TOKEN)
-    expect(balanceInCirculation).toBe(ONE_TOKEN)
     expect(liquidity).toBe(ONE_TOKEN)
     expect(alphTradeLpBalance).toBe(MAX_VALUE - ONE_TOKEN)
     expect(alphTradeUSDCBalance).toBe(ONE_TOKEN)
@@ -64,14 +60,12 @@ describe('liquidity tests', () => {
     await withdraw(alphTrade, ONE_TOKEN / 2n, signer)
 
     const balance = (await alphTrade.fetchState()).fields.balance
-    const balanceInCirculation = (await alphTrade.fetchState()).fields.balanceInCirculation
     const liquidity = (await alphTrade.fetchState()).fields.liquidity
     const alphTradeLpBalance = await balanceOf(alphTrade.contractId, alphTrade.address)
     const alphTradeUSDCBalance = await balanceOf(USDC.contractId, alphTrade.address)
     const signerLpBalance = await balanceOf(alphTrade.contractId, signer.address)
     const signerUSDCBalance = await balanceOf(USDC.contractId, signer.address)
     expect(balance).toBe(MAX_VALUE - ONE_TOKEN / 2n)
-    expect(balanceInCirculation).toBe(ONE_TOKEN / 2n)
     expect(liquidity).toBe(ONE_TOKEN / 2n)
     expect(alphTradeLpBalance).toBe(MAX_VALUE - ONE_TOKEN / 2n)
     expect(alphTradeUSDCBalance).toBe(ONE_TOKEN / 2n)
@@ -81,14 +75,12 @@ describe('liquidity tests', () => {
     await withdraw(alphTrade, ONE_TOKEN / 2n, signer)
 
     const balanceAfter = (await alphTrade.fetchState()).fields.balance
-    const balanceInCirculationAfter = (await alphTrade.fetchState()).fields.balanceInCirculation
     const liquidityAfter = (await alphTrade.fetchState()).fields.liquidity
     const alphTradeLpBalanceAfter = await balanceOf(alphTrade.contractId, alphTrade.address)
     const alphTradeUSDCBalanceAfter = await balanceOf(USDC.contractId, alphTrade.address)
     const signerLpBalanceAfter = await balanceOf(alphTrade.contractId, signer.address)
     const signerUSDCBalanceAfter = await balanceOf(USDC.contractId, signer.address)
     expect(balanceAfter).toBe(MAX_VALUE)
-    expect(balanceInCirculationAfter).toBe(0n)
     expect(liquidityAfter).toBe(0n)
     expect(alphTradeLpBalanceAfter).toBe(MAX_VALUE)
     expect(alphTradeUSDCBalanceAfter).toBe(0n)

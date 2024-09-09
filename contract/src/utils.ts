@@ -51,7 +51,6 @@ export async function deployALPHTrade(
         supply: MAX_VALUE,
         usdcId,
         balance: MAX_VALUE,
-        balanceInCirculation: 0n,
         liquidity: 0n
       },
       issueTokenAmount: MAX_VALUE

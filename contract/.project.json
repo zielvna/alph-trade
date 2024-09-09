@@ -12,9 +12,9 @@
   "infos": {
     "ALPHTrade": {
       "sourceFile": "ALPHTrade.ral",
-      "sourceCodeHash": "b2a8a342dadf380e0360bcecf566d8cd2541abdf783d2444ccc227f8514d4c46",
+      "sourceCodeHash": "da7c8d9bf065c67eae0577b142473bd43d92a60a7b0a34fd8cbfda9843393f13",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "7119a14f242ced6f3210b171a8412b57d90494ddc3897301fda732c807438efb"
+      "codeHashDebug": "0d9954ab0d50ea80c73491531163b77f3f562e4797dfab8cd0ec60fb3c6949e5"
     },
     "Deposit": {
       "sourceFile": "scripts/ALPHTrade.ral",
