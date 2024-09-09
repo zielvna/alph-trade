@@ -1,0 +1,32 @@
+{
+  "fullNodeVersion": "v3.6.2",
+  "compilerOptionsUsed": {
+    "ignoreUnusedConstantsWarnings": false,
+    "ignoreUnusedVariablesWarnings": false,
+    "ignoreUnusedFieldsWarnings": false,
+    "ignoreUnusedPrivateFunctionsWarnings": false,
+    "ignoreUpdateFieldsCheckWarnings": false,
+    "ignoreCheckExternalCallerWarnings": false,
+    "ignoreUnusedFunctionReturnWarnings": false
+  },
+  "infos": {
+    "IFungibleToken": {
+      "sourceFile": "../node_modules/@alephium/web3/std/fungible_token_interface.ral",
+      "sourceCodeHash": "62910bf11e1eeb6cb2fd468626ff606a9b06306b2b81590c3b10f6deb5966bde",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "Token": {
+      "sourceFile": "token.ral",
+      "sourceCodeHash": "6aec1a2d08bb8d5c0181241318f5c0701cb091c7dcce0718ec150f682cbfa5f2",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "c32e656cd994e7746d3bd8360952ddb7d5a9e8bccc78a018a1ababaf99d8af31"
+    },
+    "Withdraw": {
+      "sourceFile": "scripts/token.ral",
+      "sourceCodeHash": "2a4dc011973f73da2952846265c0e15049295c6663d343ee0fce761fdf1d90d4",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    }
+  }
+}

@@ -1,0 +1,3 @@
+TxScript Withdraw(token: Token, amount: U256) {
+    token.withdraw(amount)
+}
