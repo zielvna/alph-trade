@@ -1,14 +1,14 @@
 {
   "version": "v3.6.2",
-  "name": "Withdraw",
-  "bytecodeTemplate": "0101030000000cb40c0d{0}0106{1}a3{1}0d0c{0}0108",
+  "name": "Mint",
+  "bytecodeTemplate": "01010300000005{1}0d0c{0}0105",
   "fieldsSig": {
     "names": [
-      "alphTrade",
+      "token",
       "amount"
     ],
     "types": [
-      "ALPHTrade",
+      "Token",
       "U256"
     ],
     "isMutable": [

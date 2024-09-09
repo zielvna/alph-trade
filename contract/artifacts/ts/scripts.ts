@@ -12,9 +12,21 @@ import {
   HexString,
 } from "@alephium/web3";
 import { getContractByCodeHash } from "./contracts";
+import { default as DepositScriptJson } from "../scripts/Deposit.ral.json";
+import { default as MintScriptJson } from "../scripts/Mint.ral.json";
 import { default as SetValueScriptJson } from "../scripts/SetValue.ral.json";
 import { default as WithdrawScriptJson } from "../scripts/Withdraw.ral.json";
 import { OracleValue, AllStructs } from "./types";
+
+export const Deposit = new ExecutableScript<{
+  alphTrade: HexString;
+  amount: bigint;
+}>(Script.fromJson(DepositScriptJson, "", AllStructs), getContractByCodeHash);
+
+export const Mint = new ExecutableScript<{ token: HexString; amount: bigint }>(
+  Script.fromJson(MintScriptJson, "", AllStructs),
+  getContractByCodeHash
+);
 
 export const SetValue = new ExecutableScript<{
   oracle: HexString;
@@ -23,6 +35,6 @@ export const SetValue = new ExecutableScript<{
 }>(Script.fromJson(SetValueScriptJson, "", AllStructs), getContractByCodeHash);
 
 export const Withdraw = new ExecutableScript<{
-  token: HexString;
+  alphTrade: HexString;
   amount: bigint;
 }>(Script.fromJson(WithdrawScriptJson, "", AllStructs), getContractByCodeHash);

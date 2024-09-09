@@ -1,5 +1,6 @@
 import { ALPH_TOKEN_ID, node, NodeProvider, SignerProvider, web3 } from '@alephium/web3'
-import { Oracle, OracleInstance, Token, TokenInstance } from '../artifacts/ts'
+import { ALPHTrade, ALPHTradeInstance, Oracle, OracleInstance, Token, TokenInstance } from '../artifacts/ts'
+import { MAX_VALUE } from './consts'
 
 export async function deployToken(
   symbol: string,
@@ -32,6 +33,31 @@ export async function deployOracle(btcPrice: bigint, signer: SignerProvider): Pr
     })
   )
   return Oracle.at(deployResult.contractInstance.address)
+}
+
+export async function deployALPHTrade(
+  symbol: string,
+  name: string,
+  decimals: bigint,
+  usdcId: string,
+  signer: SignerProvider
+): Promise<ALPHTradeInstance> {
+  const deployResult = await waitTxConfirmed(
+    ALPHTrade.deploy(signer, {
+      initialFields: {
+        symbol: Buffer.from(symbol, 'utf8').toString('hex'),
+        name: Buffer.from(name, 'utf8').toString('hex'),
+        decimals,
+        supply: MAX_VALUE,
+        usdcId,
+        balance: MAX_VALUE,
+        balanceInCirculation: 0n,
+        liquidity: 0n
+      },
+      issueTokenAmount: MAX_VALUE
+    })
+  )
+  return ALPHTrade.at(deployResult.contractInstance.address)
 }
 
 export async function waitTxConfirmed<T extends { txId: string }>(promise: Promise<T>): Promise<T> {

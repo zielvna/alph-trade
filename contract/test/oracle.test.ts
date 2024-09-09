@@ -3,7 +3,6 @@ import { deployOracle } from '../src/utils'
 import { ONE_ALPH, web3 } from '@alephium/web3'
 import { getSigner } from '@alephium/web3-test'
 import { getValue, setValue } from '../src/oracleUtils'
-import { SetValue } from '../artifacts/ts'
 
 let signer: PrivateKeyWallet
 

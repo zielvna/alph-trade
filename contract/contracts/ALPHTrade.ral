@@ -1,0 +1,69 @@
+Contract ALPHTrade(
+    symbol: ByteVec,
+    name: ByteVec,
+    decimals: U256,
+    supply: U256,
+    usdcId: ByteVec,
+    mut balance: U256,
+    mut balanceInCirculation: U256,
+    mut liquidity: U256
+) implements IFungibleToken {
+    pub fn getTotalSupply() -> U256 {
+        return supply
+    }
+
+    pub fn getSymbol() -> ByteVec {
+        return symbol
+    }
+
+    pub fn getName() -> ByteVec {
+        return name
+    }
+
+    pub fn getDecimals() -> U256 {
+        return decimals
+    }
+
+    pub fn balance() -> U256 {
+        return balance
+    }
+
+    pub fn getUsdcId() -> ByteVec {
+        return usdcId
+    }
+
+    pub fn getLpId() -> ByteVec {
+        return selfTokenId!()
+    }
+
+    @using(assetsInContract = true, preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
+    pub fn deposit(usdcAmount: U256) -> () {
+        if(liquidity == 0) {
+            balanceInCirculation = usdcAmount
+            liquidity = usdcAmount
+            balance = balance - usdcAmount
+
+            transferTokenToSelf!(callerAddress!(), usdcId, usdcAmount)
+            transferTokenFromSelf!(callerAddress!(), selfTokenId!(), usdcAmount)
+        } else {
+            let lpAmount = usdcAmount / liquidity * balanceInCirculation
+            balanceInCirculation = balanceInCirculation + lpAmount
+            liquidity = liquidity + usdcAmount
+            balance = balance - lpAmount
+
+            transferTokenToSelf!(callerAddress!(), usdcId, usdcAmount)
+            transferTokenFromSelf!(callerAddress!(), selfTokenId!(), lpAmount)
+        }
+    }
+
+    @using(assetsInContract = true, preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
+    pub fn withdraw(lpAmount: U256) -> () {
+        let usdcAmount = lpAmount * 10 ** 6 / balanceInCirculation * liquidity / 10 ** 6
+        balanceInCirculation = balanceInCirculation - lpAmount
+        liquidity = liquidity - usdcAmount
+        balance = balance + lpAmount
+
+        transferTokenToSelf!(callerAddress!(), selfTokenId!(), lpAmount)
+        transferTokenFromSelf!(callerAddress!(), usdcId, usdcAmount)
+    }
+}

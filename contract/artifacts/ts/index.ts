@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export * from "./ALPHTrade";
 export * from "./Oracle";
 export * from "./Token";
 export * from "./scripts";

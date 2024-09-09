@@ -1,8 +1,8 @@
 import { DUST_AMOUNT, SignerProvider } from '@alephium/web3'
-import { TokenInstance, Withdraw } from '../artifacts/ts'
+import { Mint, TokenInstance } from '../artifacts/ts'
 
-export const withdraw = async (token: TokenInstance, amount: bigint, signer: SignerProvider) => {
-  return await Withdraw.execute(signer, {
+export const mint = async (token: TokenInstance, amount: bigint, signer: SignerProvider) => {
+  return await Mint.execute(signer, {
     initialFields: {
       token: token.address,
       amount

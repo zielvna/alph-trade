@@ -1,9 +1,9 @@
 import { PrivateKeyWallet } from '@alephium/web3-wallet'
 import { balanceOf, deployToken } from '../src/utils'
-import { DUST_AMOUNT, ONE_ALPH, web3 } from '@alephium/web3'
+import { ONE_ALPH, web3 } from '@alephium/web3'
 import { getSigner } from '@alephium/web3-test'
-import { Withdraw } from '../artifacts/ts'
-import { withdraw } from '../src/tokenUtils'
+import { mint } from '../src/tokenUtils'
+import { ONE_TOKEN } from '../src/consts'
 
 let signer: PrivateKeyWallet
 
@@ -14,16 +14,16 @@ describe('token tests', () => {
   })
 
   test('deploy works', async () => {
-    await deployToken('USDC', 'USD Coin', 6n, 1000000000n, signer)
+    await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
   })
 
   test('withdraw works', async () => {
-    const token = await deployToken('USDC', 'USD Coin', 6n, 1000_000000n, signer)
+    const token = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
 
     const balanceBefore = await balanceOf(token.contractId, signer.address)
-    await withdraw(token, 1_000000n, signer)
+    await mint(token, ONE_TOKEN, signer)
     const balanceAfter = await balanceOf(token.contractId, signer.address)
 
-    expect(balanceBefore + 1_000000n).toBe(balanceAfter)
+    expect(balanceBefore + ONE_TOKEN).toBe(balanceAfter)
   })
 })

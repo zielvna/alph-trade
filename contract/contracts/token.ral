@@ -28,7 +28,7 @@ Contract Token(
     }
 
     @using(assetsInContract = true, updateFields = true, checkExternalCaller = false)
-    pub fn withdraw(amount: U256) -> () {
+    pub fn mint(amount: U256) -> () {
         transferTokenFromSelf!(callerAddress!(), selfTokenId!(), amount)
         balance = balance - amount
     }

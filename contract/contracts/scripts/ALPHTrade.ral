@@ -1,0 +1,7 @@
+TxScript Deposit(alphTrade: ALPHTrade, amount: U256) {
+    alphTrade.deposit{callerAddress!() -> alphTrade.getUsdcId(): amount}(amount)
+}
+
+TxScript Withdraw(alphTrade: ALPHTrade, amount: U256) {
+    alphTrade.withdraw{callerAddress!() -> alphTrade.getLpId(): amount}(amount)
+}

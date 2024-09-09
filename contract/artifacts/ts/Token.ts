@@ -68,7 +68,7 @@ export namespace TokenTypes {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<bigint>;
     };
-    withdraw: {
+    mint: {
       params: CallContractParams<{ amount: bigint }>;
       result: CallContractResult<null>;
     };
@@ -110,7 +110,7 @@ export namespace TokenTypes {
       params: Omit<SignExecuteContractMethodParams<{}>, "args">;
       result: SignExecuteScriptTxResult;
     };
-    withdraw: {
+    mint: {
       params: SignExecuteContractMethodParams<{ amount: bigint }>;
       result: SignExecuteScriptTxResult;
     };
@@ -175,13 +175,13 @@ class Factory extends ContractFactory<TokenInstance, TokenTypes.Fields> {
     ): Promise<TestContractResultWithoutMaps<bigint>> => {
       return testMethod(this, "balance", params, getContractByCodeHash);
     },
-    withdraw: async (
+    mint: async (
       params: TestContractParamsWithoutMaps<
         TokenTypes.Fields,
         { amount: bigint }
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
-      return testMethod(this, "withdraw", params, getContractByCodeHash);
+      return testMethod(this, "mint", params, getContractByCodeHash);
     },
   };
 }
@@ -191,7 +191,7 @@ export const Token = new Factory(
   Contract.fromJson(
     TokenContractJson,
     "",
-    "c32e656cd994e7746d3bd8360952ddb7d5a9e8bccc78a018a1ababaf99d8af31",
+    "cd953482ce33032eb8361b68455763e7c6db14cf0177811aed954cab6005c465",
     AllStructs
   )
 );
@@ -262,10 +262,10 @@ export class TokenInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
-    withdraw: async (
-      params: TokenTypes.CallMethodParams<"withdraw">
-    ): Promise<TokenTypes.CallMethodResult<"withdraw">> => {
-      return callMethod(Token, this, "withdraw", params, getContractByCodeHash);
+    mint: async (
+      params: TokenTypes.CallMethodParams<"mint">
+    ): Promise<TokenTypes.CallMethodResult<"mint">> => {
+      return callMethod(Token, this, "mint", params, getContractByCodeHash);
     },
   };
 
@@ -295,10 +295,10 @@ export class TokenInstance extends ContractInstance {
     ): Promise<TokenTypes.SignExecuteMethodResult<"balance">> => {
       return signExecuteMethod(Token, this, "balance", params);
     },
-    withdraw: async (
-      params: TokenTypes.SignExecuteMethodParams<"withdraw">
-    ): Promise<TokenTypes.SignExecuteMethodResult<"withdraw">> => {
-      return signExecuteMethod(Token, this, "withdraw", params);
+    mint: async (
+      params: TokenTypes.SignExecuteMethodParams<"mint">
+    ): Promise<TokenTypes.SignExecuteMethodResult<"mint">> => {
+      return signExecuteMethod(Token, this, "mint", params);
     },
   };
 

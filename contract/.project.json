@@ -10,6 +10,18 @@
     "ignoreUnusedFunctionReturnWarnings": false
   },
   "infos": {
+    "ALPHTrade": {
+      "sourceFile": "ALPHTrade.ral",
+      "sourceCodeHash": "b2a8a342dadf380e0360bcecf566d8cd2541abdf783d2444ccc227f8514d4c46",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "7119a14f242ced6f3210b171a8412b57d90494ddc3897301fda732c807438efb"
+    },
+    "Deposit": {
+      "sourceFile": "scripts/ALPHTrade.ral",
+      "sourceCodeHash": "aef4e056710255786f3b0d764d7e89bbcfdb3ca7763f1d8ee0fc9ffeeff7f0cb",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
     "IFungibleToken": {
       "sourceFile": "../node_modules/@alephium/web3/std/fungible_token_interface.ral",
       "sourceCodeHash": "62910bf11e1eeb6cb2fd468626ff606a9b06306b2b81590c3b10f6deb5966bde",
@@ -19,6 +31,12 @@
     "IOracle": {
       "sourceFile": "oracle.ral",
       "sourceCodeHash": "c61d37c2111f6f9e527d4564f55e28b6836f40c08682bed3af99d014e41e6357",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "Mint": {
+      "sourceFile": "scripts/token.ral",
+      "sourceCodeHash": "6f96dff573e571ed0c1c34b569f19e8b505bd5a5cb8dd8a42d74bf9ed0843626",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
@@ -42,13 +60,13 @@
     },
     "Token": {
       "sourceFile": "token.ral",
-      "sourceCodeHash": "6aec1a2d08bb8d5c0181241318f5c0701cb091c7dcce0718ec150f682cbfa5f2",
+      "sourceCodeHash": "713046429dbfe80b0c3436c7f9592b874bf8f08e7f07ad3abab02338e3d9d2e4",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "c32e656cd994e7746d3bd8360952ddb7d5a9e8bccc78a018a1ababaf99d8af31"
+      "codeHashDebug": "cd953482ce33032eb8361b68455763e7c6db14cf0177811aed954cab6005c465"
     },
     "Withdraw": {
-      "sourceFile": "scripts/token.ral",
-      "sourceCodeHash": "2a4dc011973f73da2952846265c0e15049295c6663d343ee0fce761fdf1d90d4",
+      "sourceFile": "scripts/ALPHTrade.ral",
+      "sourceCodeHash": "aef4e056710255786f3b0d764d7e89bbcfdb3ca7763f1d8ee0fc9ffeeff7f0cb",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     }

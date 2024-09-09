@@ -1,19 +1,25 @@
 {
   "version": "v3.6.2",
-  "name": "Token",
-  "bytecode": "060609121b402440324049010000000102ce0002010000000102ce0102010000000102ce0202010000000102ce0302010000000103d323f4ce6aa00002010201010009d32fe63d7cb4b11600aba00016002ba100",
-  "codeHash": "cd953482ce33032eb8361b68455763e7c6db14cf0177811aed954cab6005c465",
+  "name": "ALPHTrade",
+  "bytecode": "090909121b402440324040404d40a540e7010000000102ce0002010000000102ce0102010000000102ce0202010000000102ce0302010000000103d323f4ce6aa00002010000000103d3a3227fa0ce0402010000000103d35472164db10201010102004030d3d385e15ca0020c2f4c111600a1011600a102a00016002ba100b4ce041600acb4b11600ab4a1a1600a0022da0012c1701a00116012aa101a00216002aa102a00016012ba100b4ce041600acb4b11601ab01010102004023d30fb898ce1600130a1306832ca0012da0022c130a1306832d1701a00116002ba101a00216012ba102a00016002aa100b4b11600acb4ce041601ab",
+  "codeHash": "7119a14f242ced6f3210b171a8412b57d90494ddc3897301fda732c807438efb",
   "fieldsSig": {
     "names": [
       "symbol",
       "name",
       "decimals",
       "supply",
+      "usdcId",
       "balance",
+      "balanceInCirculation",
+      "liquidity",
       "__stdInterfaceId"
     ],
     "types": [
       "ByteVec",
+      "ByteVec",
+      "U256",
+      "U256",
       "ByteVec",
       "U256",
       "U256",
@@ -25,6 +31,9 @@
       false,
       false,
       false,
+      false,
+      true,
+      true,
       true,
       false
     ]
@@ -77,9 +86,40 @@
       ]
     },
     {
-      "name": "mint",
+      "name": "getUsdcId",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "getLpId",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "deposit",
       "paramNames": [
-        "amount"
+        "usdcAmount"
+      ],
+      "paramTypes": [
+        "U256"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "withdraw",
+      "paramNames": [
+        "lpAmount"
       ],
       "paramTypes": [
         "U256"
