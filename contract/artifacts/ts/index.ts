@@ -2,5 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export * from "./Oracle";
 export * from "./Token";
 export * from "./scripts";

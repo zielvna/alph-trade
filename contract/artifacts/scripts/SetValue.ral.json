@@ -1,0 +1,31 @@
+{
+  "version": "v3.6.2",
+  "name": "SetValue",
+  "bytecodeTemplate": "01010300000006{1}{2}0e0c{0}0100",
+  "fieldsSig": {
+    "names": [
+      "oracle",
+      "key",
+      "value"
+    ],
+    "types": [
+      "Oracle",
+      "ByteVec",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "functions": [
+    {
+      "name": "main",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ]
+}

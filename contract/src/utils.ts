@@ -1,5 +1,5 @@
 import { ALPH_TOKEN_ID, node, NodeProvider, SignerProvider, web3 } from '@alephium/web3'
-import { Token, TokenInstance } from '../artifacts/ts'
+import { Oracle, OracleInstance, Token, TokenInstance } from '../artifacts/ts'
 
 export async function deployToken(
   symbol: string,
@@ -21,6 +21,17 @@ export async function deployToken(
     })
   )
   return Token.at(deployResult.contractInstance.address)
+}
+
+export async function deployOracle(btcPrice: bigint, signer: SignerProvider): Promise<OracleInstance> {
+  const deployResult = await waitTxConfirmed(
+    Oracle.deploy(signer, {
+      initialFields: {
+        btcPrice
+      }
+    })
+  )
+  return Oracle.at(deployResult.contractInstance.address)
 }
 
 export async function waitTxConfirmed<T extends { txId: string }>(promise: Promise<T>): Promise<T> {

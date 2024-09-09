@@ -16,6 +16,30 @@
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
+    "IOracle": {
+      "sourceFile": "oracle.ral",
+      "sourceCodeHash": "c61d37c2111f6f9e527d4564f55e28b6836f40c08682bed3af99d014e41e6357",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "Oracle": {
+      "sourceFile": "oracle.ral",
+      "sourceCodeHash": "c61d37c2111f6f9e527d4564f55e28b6836f40c08682bed3af99d014e41e6357",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "6ebf0205753b8d0204af27ef12c9d4f66cfd92aa84b0b753035382478ca723d3"
+    },
+    "OracleValue": {
+      "sourceFile": "oracle.ral",
+      "sourceCodeHash": "c61d37c2111f6f9e527d4564f55e28b6836f40c08682bed3af99d014e41e6357",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "SetValue": {
+      "sourceFile": "scripts/oracle.ral",
+      "sourceCodeHash": "8d78026cc969490402f507dff6ffffca9206b7d0d8f9a50c6aefacb7ae1efe26",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
     "Token": {
       "sourceFile": "token.ral",
       "sourceCodeHash": "6aec1a2d08bb8d5c0181241318f5c0701cb091c7dcce0718ec150f682cbfa5f2",

@@ -1,0 +1,3 @@
+TxScript SetValue(oracle: Oracle, key: ByteVec, value: U256) {
+    oracle.setValue(key, value)
+}

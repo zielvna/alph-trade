@@ -1,0 +1,53 @@
+{
+  "version": "v3.6.2",
+  "name": "Oracle",
+  "bytecode": "01021e403f010002020007d3d219a3cb160014084254432f55534443414c021601a10001000101020bd3a0e6c231160014084254432f55534443414c03a00056020c0c02",
+  "codeHash": "6ebf0205753b8d0204af27ef12c9d4f66cfd92aa84b0b753035382478ca723d3",
+  "fieldsSig": {
+    "names": [
+      "btcPrice"
+    ],
+    "types": [
+      "U256"
+    ],
+    "isMutable": [
+      true
+    ]
+  },
+  "eventsSig": [],
+  "functions": [
+    {
+      "name": "setValue",
+      "paramNames": [
+        "key",
+        "value"
+      ],
+      "paramTypes": [
+        "ByteVec",
+        "U256"
+      ],
+      "paramIsMutable": [
+        false,
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "getValue",
+      "paramNames": [
+        "key"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": [
+        "OracleValue"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": []
+}

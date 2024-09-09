@@ -12,9 +12,17 @@ import {
   HexString,
 } from "@alephium/web3";
 import { getContractByCodeHash } from "./contracts";
+import { default as SetValueScriptJson } from "../scripts/SetValue.ral.json";
 import { default as WithdrawScriptJson } from "../scripts/Withdraw.ral.json";
+import { OracleValue, AllStructs } from "./types";
+
+export const SetValue = new ExecutableScript<{
+  oracle: HexString;
+  key: HexString;
+  value: bigint;
+}>(Script.fromJson(SetValueScriptJson, "", AllStructs), getContractByCodeHash);
 
 export const Withdraw = new ExecutableScript<{
   token: HexString;
   amount: bigint;
-}>(Script.fromJson(WithdrawScriptJson, "", []), getContractByCodeHash);
+}>(Script.fromJson(WithdrawScriptJson, "", AllStructs), getContractByCodeHash);

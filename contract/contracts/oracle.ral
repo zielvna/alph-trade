@@ -1,0 +1,25 @@
+struct OracleValue {
+    mut value: U256,
+    mut timestamp: U256
+}
+
+Interface IOracle {
+    pub fn getValue(key: ByteVec) -> OracleValue
+}
+
+Contract Oracle(mut btcPrice: U256) {
+    @using(updateFields = true, checkExternalCaller = false)
+    pub fn setValue(key: ByteVec, value: U256) -> () {
+        if(key == b`BTC/USDC`) {
+            btcPrice = value
+        }
+    }
+
+    pub fn getValue(key: ByteVec) -> OracleValue {
+        if(key == b`BTC/USDC`) {
+            return OracleValue { value: btcPrice, timestamp: blockTimeStamp!() }
+        }
+
+        return OracleValue { value: 0, timestamp: 0 }
+    }
+}

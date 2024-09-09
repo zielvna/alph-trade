@@ -33,6 +33,7 @@ import {
 } from "@alephium/web3";
 import { default as TokenContractJson } from "../Token.ral.json";
 import { getContractByCodeHash } from "./contracts";
+import { OracleValue, AllStructs } from "./types";
 
 // Custom types for the contract
 export namespace TokenTypes {
@@ -125,7 +126,7 @@ class Factory extends ContractFactory<TokenInstance, TokenTypes.Fields> {
     return encodeContractFields(
       addStdIdToFields(this.contract, fields),
       this.contract.fieldsSig,
-      []
+      AllStructs
     );
   }
 
@@ -191,7 +192,7 @@ export const Token = new Factory(
     TokenContractJson,
     "",
     "c32e656cd994e7746d3bd8360952ddb7d5a9e8bccc78a018a1ababaf99d8af31",
-    []
+    AllStructs
   )
 );
 
