@@ -12,13 +12,19 @@
   "infos": {
     "ALPHTrade": {
       "sourceFile": "ALPHTrade.ral",
-      "sourceCodeHash": "da7c8d9bf065c67eae0577b142473bd43d92a60a7b0a34fd8cbfda9843393f13",
+      "sourceCodeHash": "630b1629feb55872d2f09548cab68e5c04b5d83fc063d981727e394b87b38017",
+      "bytecodeDebugPatch": "=36-2+ad=2-2+db=1-2+4=1+6=2-2+ed=455-1+f=280+7a7e0214696e73657274206174206d617020706174683a2000=83+1=1-2+1=670+7a7e021472656d6f7665206174206d617020706174683a2000=25-1+e=40+7a7e0214696e73657274206174206d617020706174683a2000=178+7a7e021472656d6f7665206174206d617020706174683a2000=3146",
+      "codeHashDebug": "a39c2c653d85e5fe25808dad82f66cb4539c39cfa504e984493804bba2acedf6"
+    },
+    "ClosePosition": {
+      "sourceFile": "scripts/ALPHTrade.ral",
+      "sourceCodeHash": "720ebbb8ffa06ecefe139e1d0f14150e5bdfc3d9ed092a87550f891fed60edcb",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "0d9954ab0d50ea80c73491531163b77f3f562e4797dfab8cd0ec60fb3c6949e5"
+      "codeHashDebug": ""
     },
     "Deposit": {
       "sourceFile": "scripts/ALPHTrade.ral",
-      "sourceCodeHash": "aef4e056710255786f3b0d764d7e89bbcfdb3ca7763f1d8ee0fc9ffeeff7f0cb",
+      "sourceCodeHash": "720ebbb8ffa06ecefe139e1d0f14150e5bdfc3d9ed092a87550f891fed60edcb",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
@@ -40,6 +46,12 @@
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
+    "OpenPosition": {
+      "sourceFile": "scripts/ALPHTrade.ral",
+      "sourceCodeHash": "720ebbb8ffa06ecefe139e1d0f14150e5bdfc3d9ed092a87550f891fed60edcb",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
     "Oracle": {
       "sourceFile": "oracle.ral",
       "sourceCodeHash": "c61d37c2111f6f9e527d4564f55e28b6836f40c08682bed3af99d014e41e6357",
@@ -49,6 +61,12 @@
     "OracleValue": {
       "sourceFile": "oracle.ral",
       "sourceCodeHash": "c61d37c2111f6f9e527d4564f55e28b6836f40c08682bed3af99d014e41e6357",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "Position": {
+      "sourceFile": "ALPHTrade.ral",
+      "sourceCodeHash": "630b1629feb55872d2f09548cab68e5c04b5d83fc063d981727e394b87b38017",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
@@ -66,7 +84,7 @@
     },
     "Withdraw": {
       "sourceFile": "scripts/ALPHTrade.ral",
-      "sourceCodeHash": "aef4e056710255786f3b0d764d7e89bbcfdb3ca7763f1d8ee0fc9ffeeff7f0cb",
+      "sourceCodeHash": "720ebbb8ffa06ecefe139e1d0f14150e5bdfc3d9ed092a87550f891fed60edcb",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     }

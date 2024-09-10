@@ -33,7 +33,7 @@ import {
 } from "@alephium/web3";
 import { default as TokenContractJson } from "../Token.ral.json";
 import { getContractByCodeHash } from "./contracts";
-import { OracleValue, AllStructs } from "./types";
+import { OracleValue, Position, AllStructs } from "./types";
 
 // Custom types for the contract
 export namespace TokenTypes {

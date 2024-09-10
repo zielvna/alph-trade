@@ -1,5 +1,5 @@
 import { PrivateKeyWallet } from '@alephium/web3-wallet'
-import { deployALPHTrade, deployToken } from '../src/utils'
+import { deployALPHTrade, deployOracle, deployToken } from '../src/utils'
 import { ONE_ALPH, web3 } from '@alephium/web3'
 import { getSigner } from '@alephium/web3-test'
 import { ONE_TOKEN } from '../src/consts'
@@ -14,6 +14,7 @@ describe('alph trade tests', () => {
 
   test('deploy works', async () => {
     const USDC = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
-    await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, signer)
+    const oracle = await deployOracle(50000_00000000n, signer)
+    await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, oracle.contractId, signer)
   })
 })

@@ -9,3 +9,11 @@ export interface OracleValue extends Record<string, Val> {
   value: bigint;
   timestamp: bigint;
 }
+export interface Position extends Record<string, Val> {
+  owner: Address;
+  type: bigint;
+  colateral: bigint;
+  leverage: bigint;
+  entryPrice: bigint;
+  entryTimestamp: bigint;
+}

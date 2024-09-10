@@ -1,12 +1,41 @@
+struct Position {
+    mut owner: Address,
+    mut type: U256,
+    mut colateral: U256,
+    mut leverage: U256,
+    mut entryPrice: U256,
+    mut entryTimestamp: U256
+}
+
 Contract ALPHTrade(
     symbol: ByteVec,
     name: ByteVec,
     decimals: U256,
     supply: U256,
     usdcId: ByteVec,
+    oracleId: IOracle,
     mut balance: U256,
-    mut liquidity: U256
+    mut liquidity: U256,
+    mut positionsSize: U256,
+    mut positionsIndex: U256
 ) implements IFungibleToken {
+    mapping[U256, Position] positions
+
+    const MAX_LEVERAGE = 20
+    const OPEN_INTEREST_PERCENTAGE_LIMIT = 50
+
+    enum Error {
+        InvalidPositionType = 0
+        InvalidLeverage = 1
+        NotAnOwner = 2
+        NotEnoughLiquidity = 3
+    }
+
+    enum PositionType {
+        Long = 0
+        Short = 1
+    }
+
     pub fn getTotalSupply() -> U256 {
         return supply
     }
@@ -61,5 +90,89 @@ Contract ALPHTrade(
 
         transferTokenToSelf!(callerAddress!(), selfTokenId!(), lpAmount)
         transferTokenFromSelf!(callerAddress!(), usdcId, usdcAmount)
+    }
+
+    @using(preapprovedAssets = true, checkExternalCaller = false, updateFields = true, payToContractOnly = true)
+    pub fn openPosition(type: U256, colateral: U256, leverage: U256) -> () {
+        assert!(type == PositionType.Long || type == PositionType.Short, Error.InvalidPositionType)
+        assert!(leverage >= 2 && leverage <= MAX_LEVERAGE, Error.InvalidLeverage)
+        let positionSize = colateral * leverage
+        assert!(positionsSize + positionSize <= OPEN_INTEREST_PERCENTAGE_LIMIT * liquidity / 100, Error.NotEnoughLiquidity)
+
+        let btcPrice = oracleId.getValue(b`BTC/USDC`).value
+        let mut entryPrice = 0
+        if (type == PositionType.Long) {
+            entryPrice = btcPrice * 1005 / 1000
+        } else {
+            entryPrice = btcPrice * 995 / 1000
+        }
+
+        let caller = callerAddress!()
+        let entryTimestamp = blockTimeStamp!()
+        positions.insert!(caller, positionsIndex, Position { owner: caller, type, colateral, leverage, entryPrice, entryTimestamp })
+        positionsIndex = positionsIndex + 1
+        positionsSize = positionsSize + positionSize
+        transferTokenToSelf!(caller, usdcId, colateral)
+    }
+
+    @using(assetsInContract = true, updateFields = true)
+    pub fn closePosition(positionIndex: U256) -> () {
+        let caller = callerAddress!()
+        let position = positions[positionIndex]
+        checkCaller!(caller == position.owner, Error.NotAnOwner)
+
+        let closeTimestamp = blockTimeStamp!()
+        let timeDifference = closeTimestamp - position.entryTimestamp
+        let hoursPassed = timeDifference / 3600000 + 1
+
+        let hourlyBorrowCost = toI256!(position.colateral) * toI256!(position.leverage) * 5i / 100000i
+        let valueAfterFees = toI256!(position.colateral) - hourlyBorrowCost * toI256!(hoursPassed)
+
+        let btcPrice = oracleId.getValue(b`BTC/USDC`).value
+        let mut closePrice = 0
+        if (position.type == PositionType.Long) {
+            closePrice = btcPrice * 995 / 1000
+        } else {
+            closePrice = btcPrice * 1005 / 1000
+        }
+
+        if (valueAfterFees > 0i) {
+            let mut value = 0i
+            if (position.type == PositionType.Long) {
+                value = (valueAfterFees * 100000000i - (100000000i - toI256!(closePrice) * 100000000i / toI256!(position.entryPrice)) * toI256!(position.colateral) * toI256!(position.leverage)) / 100000000i
+            } else {
+                value = (valueAfterFees * 100000000i - (toI256!(closePrice) * 100000000i / toI256!(position.entryPrice) - 100000000i) * toI256!(position.colateral) * toI256!(position.leverage)) / 100000000i
+            }
+
+            transferTokenFromSelf!(caller, usdcId, toU256!(value))
+        }
+
+        positions.remove!(caller, positionIndex)
+        if(positionIndex != positionsIndex - 1) {
+            positions.insert!(caller, positionIndex, positions[positionsIndex - 1])
+            positions.remove!(caller, positionsIndex - 1)
+        }
+        positionsIndex = positionsIndex - 1
+        positionsSize = positionsSize - position.colateral * position.leverage
+    }
+
+    pub fn getPosition(positionIndex: U256) -> Position {
+        return positions[positionIndex]
+    }
+
+    pub fn getPositions(address: Address) -> ([Position; 35], [U256; 35]) {
+        let mut userPositions = [Position { owner: nullContractAddress!(), type: 0, colateral: 0, leverage: 0, entryPrice: 0, entryTimestamp: 0 }; 35]
+        let mut indexes = [0; 35]
+        let mut i = 0
+
+        for (let mut j = 0; j < positionsIndex; j = j + 1) {
+            if (positions.contains!(j) && positions[j].owner == address) {
+                userPositions[i] = positions[j]
+                indexes[i] = j
+                i = i + 1
+            }
+        }
+        
+        return userPositions, indexes
     }
 }

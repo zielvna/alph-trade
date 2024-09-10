@@ -33,7 +33,8 @@ import {
 } from "@alephium/web3";
 import { default as ALPHTradeContractJson } from "../ALPHTrade.ral.json";
 import { getContractByCodeHash } from "./contracts";
-import { OracleValue, AllStructs } from "./types";
+import { OracleValue, Position, AllStructs } from "./types";
+import { RalphMap } from "@alephium/web3";
 
 // Custom types for the contract
 export namespace ALPHTradeTypes {
@@ -43,8 +44,11 @@ export namespace ALPHTradeTypes {
     decimals: bigint;
     supply: bigint;
     usdcId: HexString;
+    oracleId: HexString;
     balance: bigint;
     liquidity: bigint;
+    positionsSize: bigint;
+    positionsIndex: bigint;
   };
 
   export type State = ContractState<Fields>;
@@ -85,6 +89,103 @@ export namespace ALPHTradeTypes {
     withdraw: {
       params: CallContractParams<{ lpAmount: bigint }>;
       result: CallContractResult<null>;
+    };
+    openPosition: {
+      params: CallContractParams<{
+        type: bigint;
+        colateral: bigint;
+        leverage: bigint;
+      }>;
+      result: CallContractResult<null>;
+    };
+    closePosition: {
+      params: CallContractParams<{ positionIndex: bigint }>;
+      result: CallContractResult<null>;
+    };
+    getPosition: {
+      params: CallContractParams<{ positionIndex: bigint }>;
+      result: CallContractResult<Position>;
+    };
+    getPositions: {
+      params: CallContractParams<{ address: Address }>;
+      result: CallContractResult<
+        [
+          [
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position
+          ],
+          [
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint
+          ]
+        ]
+      >;
     };
   }
   export type CallMethodParams<T extends keyof CallMethodTable> =
@@ -140,6 +241,26 @@ export namespace ALPHTradeTypes {
       params: SignExecuteContractMethodParams<{ lpAmount: bigint }>;
       result: SignExecuteScriptTxResult;
     };
+    openPosition: {
+      params: SignExecuteContractMethodParams<{
+        type: bigint;
+        colateral: bigint;
+        leverage: bigint;
+      }>;
+      result: SignExecuteScriptTxResult;
+    };
+    closePosition: {
+      params: SignExecuteContractMethodParams<{ positionIndex: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
+    getPosition: {
+      params: SignExecuteContractMethodParams<{ positionIndex: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
+    getPositions: {
+      params: SignExecuteContractMethodParams<{ address: Address }>;
+      result: SignExecuteScriptTxResult;
+    };
   }
   export type SignExecuteMethodParams<T extends keyof SignExecuteMethodTable> =
     SignExecuteMethodTable[T]["params"];
@@ -159,6 +280,18 @@ class Factory extends ContractFactory<
     );
   }
 
+  consts = {
+    MAX_LEVERAGE: BigInt("20"),
+    OPEN_INTEREST_PERCENTAGE_LIMIT: BigInt("50"),
+    Error: {
+      InvalidPositionType: BigInt("0"),
+      InvalidLeverage: BigInt("1"),
+      NotAnOwner: BigInt("2"),
+      NotEnoughLiquidity: BigInt("3"),
+    },
+    PositionType: { Long: BigInt("0"), Short: BigInt("1") },
+  };
+
   at(address: string): ALPHTradeInstance {
     return new ALPHTradeInstance(address);
   }
@@ -166,75 +299,245 @@ class Factory extends ContractFactory<
   tests = {
     getSymbol: async (
       params: Omit<
-        TestContractParamsWithoutMaps<ALPHTradeTypes.Fields, never>,
+        TestContractParams<
+          ALPHTradeTypes.Fields,
+          never,
+          { positions?: Map<bigint, Position> }
+        >,
         "testArgs"
       >
-    ): Promise<TestContractResultWithoutMaps<HexString>> => {
+    ): Promise<
+      TestContractResult<HexString, { positions?: Map<bigint, Position> }>
+    > => {
       return testMethod(this, "getSymbol", params, getContractByCodeHash);
     },
     getName: async (
       params: Omit<
-        TestContractParamsWithoutMaps<ALPHTradeTypes.Fields, never>,
+        TestContractParams<
+          ALPHTradeTypes.Fields,
+          never,
+          { positions?: Map<bigint, Position> }
+        >,
         "testArgs"
       >
-    ): Promise<TestContractResultWithoutMaps<HexString>> => {
+    ): Promise<
+      TestContractResult<HexString, { positions?: Map<bigint, Position> }>
+    > => {
       return testMethod(this, "getName", params, getContractByCodeHash);
     },
     getDecimals: async (
       params: Omit<
-        TestContractParamsWithoutMaps<ALPHTradeTypes.Fields, never>,
+        TestContractParams<
+          ALPHTradeTypes.Fields,
+          never,
+          { positions?: Map<bigint, Position> }
+        >,
         "testArgs"
       >
-    ): Promise<TestContractResultWithoutMaps<bigint>> => {
+    ): Promise<
+      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+    > => {
       return testMethod(this, "getDecimals", params, getContractByCodeHash);
     },
     getTotalSupply: async (
       params: Omit<
-        TestContractParamsWithoutMaps<ALPHTradeTypes.Fields, never>,
+        TestContractParams<
+          ALPHTradeTypes.Fields,
+          never,
+          { positions?: Map<bigint, Position> }
+        >,
         "testArgs"
       >
-    ): Promise<TestContractResultWithoutMaps<bigint>> => {
+    ): Promise<
+      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+    > => {
       return testMethod(this, "getTotalSupply", params, getContractByCodeHash);
     },
     balance: async (
       params: Omit<
-        TestContractParamsWithoutMaps<ALPHTradeTypes.Fields, never>,
+        TestContractParams<
+          ALPHTradeTypes.Fields,
+          never,
+          { positions?: Map<bigint, Position> }
+        >,
         "testArgs"
       >
-    ): Promise<TestContractResultWithoutMaps<bigint>> => {
+    ): Promise<
+      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+    > => {
       return testMethod(this, "balance", params, getContractByCodeHash);
     },
     getUsdcId: async (
       params: Omit<
-        TestContractParamsWithoutMaps<ALPHTradeTypes.Fields, never>,
+        TestContractParams<
+          ALPHTradeTypes.Fields,
+          never,
+          { positions?: Map<bigint, Position> }
+        >,
         "testArgs"
       >
-    ): Promise<TestContractResultWithoutMaps<HexString>> => {
+    ): Promise<
+      TestContractResult<HexString, { positions?: Map<bigint, Position> }>
+    > => {
       return testMethod(this, "getUsdcId", params, getContractByCodeHash);
     },
     getLpId: async (
       params: Omit<
-        TestContractParamsWithoutMaps<ALPHTradeTypes.Fields, never>,
+        TestContractParams<
+          ALPHTradeTypes.Fields,
+          never,
+          { positions?: Map<bigint, Position> }
+        >,
         "testArgs"
       >
-    ): Promise<TestContractResultWithoutMaps<HexString>> => {
+    ): Promise<
+      TestContractResult<HexString, { positions?: Map<bigint, Position> }>
+    > => {
       return testMethod(this, "getLpId", params, getContractByCodeHash);
     },
     deposit: async (
-      params: TestContractParamsWithoutMaps<
+      params: TestContractParams<
         ALPHTradeTypes.Fields,
-        { usdcAmount: bigint }
+        { usdcAmount: bigint },
+        { positions?: Map<bigint, Position> }
       >
-    ): Promise<TestContractResultWithoutMaps<null>> => {
+    ): Promise<
+      TestContractResult<null, { positions?: Map<bigint, Position> }>
+    > => {
       return testMethod(this, "deposit", params, getContractByCodeHash);
     },
     withdraw: async (
-      params: TestContractParamsWithoutMaps<
+      params: TestContractParams<
         ALPHTradeTypes.Fields,
-        { lpAmount: bigint }
+        { lpAmount: bigint },
+        { positions?: Map<bigint, Position> }
       >
-    ): Promise<TestContractResultWithoutMaps<null>> => {
+    ): Promise<
+      TestContractResult<null, { positions?: Map<bigint, Position> }>
+    > => {
       return testMethod(this, "withdraw", params, getContractByCodeHash);
+    },
+    openPosition: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { type: bigint; colateral: bigint; leverage: bigint },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<null, { positions?: Map<bigint, Position> }>
+    > => {
+      return testMethod(this, "openPosition", params, getContractByCodeHash);
+    },
+    closePosition: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { positionIndex: bigint },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<null, { positions?: Map<bigint, Position> }>
+    > => {
+      return testMethod(this, "closePosition", params, getContractByCodeHash);
+    },
+    getPosition: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { positionIndex: bigint },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<Position, { positions?: Map<bigint, Position> }>
+    > => {
+      return testMethod(this, "getPosition", params, getContractByCodeHash);
+    },
+    getPositions: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { address: Address },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<
+        [
+          [
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position
+          ],
+          [
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint
+          ]
+        ],
+        { positions?: Map<bigint, Position> }
+      >
+    > => {
+      return testMethod(this, "getPositions", params, getContractByCodeHash);
     },
   };
 }
@@ -243,8 +546,8 @@ class Factory extends ContractFactory<
 export const ALPHTrade = new Factory(
   Contract.fromJson(
     ALPHTradeContractJson,
-    "",
-    "0d9954ab0d50ea80c73491531163b77f3f562e4797dfab8cd0ec60fb3c6949e5",
+    "=36-2+ad=2-2+db=1-2+4=1+6=2-2+ed=455-1+f=280+7a7e0214696e73657274206174206d617020706174683a2000=83+1=1-2+1=670+7a7e021472656d6f7665206174206d617020706174683a2000=25-1+e=40+7a7e0214696e73657274206174206d617020706174683a2000=178+7a7e021472656d6f7665206174206d617020706174683a2000=3146",
+    "a39c2c653d85e5fe25808dad82f66cb4539c39cfa504e984493804bba2acedf6",
     AllStructs
   )
 );
@@ -254,6 +557,14 @@ export class ALPHTradeInstance extends ContractInstance {
   constructor(address: Address) {
     super(address);
   }
+
+  maps = {
+    positions: new RalphMap<bigint, Position>(
+      ALPHTrade.contract,
+      this.contractId,
+      "positions"
+    ),
+  };
 
   async fetchState(): Promise<ALPHTradeTypes.State> {
     return fetchContractState(ALPHTrade, this);
@@ -359,6 +670,50 @@ export class ALPHTradeInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
+    openPosition: async (
+      params: ALPHTradeTypes.CallMethodParams<"openPosition">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"openPosition">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "openPosition",
+        params,
+        getContractByCodeHash
+      );
+    },
+    closePosition: async (
+      params: ALPHTradeTypes.CallMethodParams<"closePosition">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"closePosition">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "closePosition",
+        params,
+        getContractByCodeHash
+      );
+    },
+    getPosition: async (
+      params: ALPHTradeTypes.CallMethodParams<"getPosition">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"getPosition">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "getPosition",
+        params,
+        getContractByCodeHash
+      );
+    },
+    getPositions: async (
+      params: ALPHTradeTypes.CallMethodParams<"getPositions">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"getPositions">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "getPositions",
+        params,
+        getContractByCodeHash
+      );
+    },
   };
 
   transact = {
@@ -406,6 +761,26 @@ export class ALPHTradeInstance extends ContractInstance {
       params: ALPHTradeTypes.SignExecuteMethodParams<"withdraw">
     ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"withdraw">> => {
       return signExecuteMethod(ALPHTrade, this, "withdraw", params);
+    },
+    openPosition: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"openPosition">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"openPosition">> => {
+      return signExecuteMethod(ALPHTrade, this, "openPosition", params);
+    },
+    closePosition: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"closePosition">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"closePosition">> => {
+      return signExecuteMethod(ALPHTrade, this, "closePosition", params);
+    },
+    getPosition: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"getPosition">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getPosition">> => {
+      return signExecuteMethod(ALPHTrade, this, "getPosition", params);
+    },
+    getPositions: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"getPositions">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getPositions">> => {
+      return signExecuteMethod(ALPHTrade, this, "getPositions", params);
     },
   };
 

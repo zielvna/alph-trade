@@ -40,6 +40,7 @@ export async function deployALPHTrade(
   name: string,
   decimals: bigint,
   usdcId: string,
+  oracleId: string,
   signer: SignerProvider
 ): Promise<ALPHTradeInstance> {
   const deployResult = await waitTxConfirmed(
@@ -50,8 +51,11 @@ export async function deployALPHTrade(
         decimals,
         supply: MAX_VALUE,
         usdcId,
+        oracleId,
         balance: MAX_VALUE,
-        liquidity: 0n
+        liquidity: 0n,
+        positionsSize: 0n,
+        positionsIndex: 0n
       },
       issueTokenAmount: MAX_VALUE
     })

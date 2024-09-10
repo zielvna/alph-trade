@@ -18,7 +18,8 @@ describe('liquidity tests', () => {
 
   test('deposit works', async () => {
     const USDC = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
-    const alphTrade = await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, signer)
+    const oracle = await deployOracle(50000_00000000n, signer)
+    const alphTrade = await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, oracle.contractId, signer)
 
     await mint(USDC, ONE_TOKEN, signer)
 
@@ -53,7 +54,8 @@ describe('liquidity tests', () => {
 
   test('withdraw works', async () => {
     const USDC = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
-    const alphTrade = await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, signer)
+    const oracle = await deployOracle(50000_00000000n, signer)
+    const alphTrade = await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, oracle.contractId, signer)
 
     await mint(USDC, ONE_TOKEN, signer)
     await deposit(alphTrade, ONE_TOKEN, signer)
