@@ -77,6 +77,7 @@ describe('token tests', () => {
     const alphTradeUSDCBalanceAfter = await balanceOf(USDC.contractId, alphTrade.address)
     const signerUSDCBalanceAfter = await balanceOf(USDC.contractId, signer.address)
     expect(alphTradeUSDCBalanceAfter).toBe(4020001n)
+    // 1 - (1 * 2 * 0.00005) - (1 - (50000 * 0.995) / (50000 * 1.005)) * 1 * 2 = 0.979999...
     expect(signerUSDCBalanceAfter).toBe(979999n)
   })
 })

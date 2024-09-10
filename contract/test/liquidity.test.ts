@@ -3,7 +3,7 @@ import { balanceOf, deployALPHTrade, deployOracle, deployToken } from '../src/ut
 import { ONE_ALPH, web3 } from '@alephium/web3'
 import { getSigner } from '@alephium/web3-test'
 import { getValue, setValue } from '../src/oracleUtils'
-import { deposit, withdraw } from '../src/alphTradeUtils'
+import { closePosition, deposit, openPosition, withdraw } from '../src/alphTradeUtils'
 import { mint } from '../src/tokenUtils'
 import { MAX_VALUE, ONE_TOKEN } from '../src/consts'
 import { Withdraw } from '../artifacts/ts'
@@ -88,5 +88,32 @@ describe('liquidity tests', () => {
     expect(alphTradeUSDCBalanceAfter).toBe(0n)
     expect(signerLpBalanceAfter).toBe(0n)
     expect(signerUSDCBalanceAfter).toBe(ONE_TOKEN)
+  })
+
+  test('withdraw after liquidity increased', async () => {
+    const USDC = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
+    const oracle = await deployOracle(50000_00000000n, signer)
+    const alphTrade = await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, oracle.contractId, signer)
+
+    await mint(USDC, ONE_TOKEN * 5n, signer)
+    await deposit(alphTrade, ONE_TOKEN * 4n, signer)
+    await openPosition(alphTrade, 0n, ONE_TOKEN, 2n, signer)
+    await setValue(oracle, 'BTC/USDC', 60000_00000000n, signer)
+    await closePosition(alphTrade, 0n, signer)
+
+    await withdraw(alphTrade, ONE_TOKEN * 2n, signer)
+    const balance = (await alphTrade.fetchState()).fields.balance
+    const liquidity = (await alphTrade.fetchState()).fields.liquidity
+    const alphTradeLpBalance = await balanceOf(alphTrade.contractId, alphTrade.address)
+    const alphTradeUSDCBalance = await balanceOf(USDC.contractId, alphTrade.address)
+    const signerLpBalance = await balanceOf(alphTrade.contractId, signer.address)
+    const signerUSDCBalance = await balanceOf(USDC.contractId, signer.address)
+    expect(balance).toBe(MAX_VALUE - ONE_TOKEN * 2n)
+    // ((4 + 1) - (1 - (1 * 2 * 0.00005) - (1 - (60000 * 0.995) / (50000 * 1.005)) * 1 * 2)) * (2 / 4) = 1.811990 (rounded up)
+    expect(liquidity).toBe(1811991n)
+    expect(alphTradeLpBalance).toBe(MAX_VALUE - ONE_TOKEN * 2n)
+    expect(alphTradeUSDCBalance).toBe(1811991n)
+    expect(signerLpBalance).toBe(ONE_TOKEN * 2n)
+    expect(signerUSDCBalance).toBe(ONE_TOKEN * 5n - 1811991n)
   })
 })

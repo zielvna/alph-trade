@@ -136,6 +136,7 @@ Contract ALPHTrade(
             closePrice = btcPrice * 1005 / 1000
         }
 
+        liquidity = liquidity + position.colateral
         if (valueAfterFees > 0i) {
             let mut value = 0i
             if (position.type == PositionType.Long) {
@@ -144,6 +145,7 @@ Contract ALPHTrade(
                 value = (valueAfterFees * 100000000i - (toI256!(closePrice) * 100000000i / toI256!(position.entryPrice) - 100000000i) * toI256!(position.colateral) * toI256!(position.leverage)) / 100000000i
             }
 
+            liquidity = liquidity - toU256!(value)
             transferTokenFromSelf!(caller, usdcId, toU256!(value))
         }
 
