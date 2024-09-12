@@ -1,71 +1,36 @@
-This is a Alephium template project for the
-[Next.js](https://nextjs.org/) framework, it is bootstrapped with the
-following command:
-
-```
-npx @alephium/cli init $project-name --template nextjs
-```
-
-This template project demonstrates how to implement a simple token
-faucet and expose it with a Web UI using Next.js.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-### Install
-
-```
-npm install
-```
-
-### Start a local devnet for testing and development
-
-```
-npx @alephium/cli@latest devnet start
-```
-
-### Deploy the token faucet contract
-
-```bash
-# In this case devnet
-npx @alephium/cli deploy -n devnet
-```
-
-This will compile and deploy the token faucet contracts to all of the
-4 groups on devnet.
-
-Before deployment, you might want to just compile and test the
-contracts first:
-
-```bash
-# Compile
-npx @alephium/cli compile
-
-# Test
-npx @alephium/cli test
-```
-
-### Run the development server
+First, run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser
-to see the token faucet application.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-Download the [Alephium Extension Wallet](https://github.com/alephium/extension-wallet)
-to interact with the application.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
 
-To learn more about smart contract development on Alephium, take a
-look at the following resources:
+To learn more about Next.js, take a look at the following resources:
 
-- [Alephium Web3 SDK Guide](https://docs.alephium.org/dapps/alephium-web3/) - Learn about Alephium Web3 SDK
-- [Ralph Language](https://docs.alephium.org/ralph/getting-started) - A guide to the Ralph programming language
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out the [Alephium GitHub
-repositories](https://github.com/alephium) for more information - your
-feedback and contributions are welcome!
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
