@@ -21,14 +21,23 @@ Contract ALPHTrade(
 ) implements IFungibleToken {
     mapping[U256, Position] positions
 
+    const TOKEN_DENOMINATOR = 10 ** 6
+    const PRICE_DENOMINATOR = 10 ** 9
+    const MIN_LEVERAGE = 2
     const MAX_LEVERAGE = 20
-    const OPEN_INTEREST_PERCENTAGE_LIMIT = 50
+    const OPEN_INTEREST_LIMIT_NOMINATOR = 50
+    const OPEN_INTEREST_LIMIT_DENOMINATOR = 100
+    const LIQUIDATION_TRESHOLD_NOMINATOR = 1i
+    const LIQUIDATION_TRESHOLD_DENOMINATOR = 6i
+    const LIQUIDATION_FEE_NOMINATOR = 1
+    const LIQUIDATION_FEE_DENOMINATOR = 100
 
     enum Error {
         InvalidPositionType = 0
         InvalidLeverage = 1
         NotAnOwner = 2
         NotEnoughLiquidity = 3
+        PositionValueAboveLiquidationThreshold = 4
     }
 
     enum PositionType {
@@ -84,7 +93,7 @@ Contract ALPHTrade(
 
     @using(assetsInContract = true, preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
     pub fn withdraw(lpAmount: U256) -> () {
-        let usdcAmount = lpAmount * 10 ** 6 / (u256Max!() - balance) * liquidity / 10 ** 6
+        let usdcAmount = lpAmount * TOKEN_DENOMINATOR / (u256Max!() - balance) * liquidity / TOKEN_DENOMINATOR
         liquidity = liquidity - usdcAmount
         balance = balance + lpAmount
 
@@ -92,24 +101,17 @@ Contract ALPHTrade(
         transferTokenFromSelf!(callerAddress!(), usdcId, usdcAmount)
     }
 
-    @using(preapprovedAssets = true, checkExternalCaller = false, updateFields = true, payToContractOnly = true)
+    @using(preapprovedAssets = true, checkExternalCaller = false, payToContractOnly = true, updateFields = true)
     pub fn openPosition(type: U256, colateral: U256, leverage: U256) -> () {
-        assert!(type == PositionType.Long || type == PositionType.Short, Error.InvalidPositionType)
-        assert!(leverage >= 2 && leverage <= MAX_LEVERAGE, Error.InvalidLeverage)
-        let positionSize = colateral * leverage
-        assert!(positionsSize + positionSize <= OPEN_INTEREST_PERCENTAGE_LIMIT * liquidity / 100, Error.NotEnoughLiquidity)
-
-        let btcPrice = oracleId.getValue(b`BTC/USDC`).value
-        let mut entryPrice = 0
-        if (type == PositionType.Long) {
-            entryPrice = btcPrice * 1005 / 1000
-        } else {
-            entryPrice = btcPrice * 995 / 1000
-        }
-
         let caller = callerAddress!()
         let entryTimestamp = blockTimeStamp!()
-        positions.insert!(caller, positionsIndex, Position { owner: caller, type, colateral, leverage, entryPrice, entryTimestamp })
+        assert!(type == PositionType.Long || type == PositionType.Short, Error.InvalidPositionType)
+        assert!(leverage >= MIN_LEVERAGE && leverage <= MAX_LEVERAGE, Error.InvalidLeverage)
+        let positionSize = colateral * leverage
+        assert!(positionsSize + positionSize <= liquidity * OPEN_INTEREST_LIMIT_NOMINATOR / OPEN_INTEREST_LIMIT_DENOMINATOR, Error.NotEnoughLiquidity)
+
+        let entryPrice = getPrice(type, true)
+        addPosition{caller -> ALPH: mapEntryDeposit!()}(caller, Position { owner: caller, type, colateral, leverage, entryPrice, entryTimestamp })
         positionsIndex = positionsIndex + 1
         positionsSize = positionsSize + positionSize
         transferTokenToSelf!(caller, usdcId, colateral)
@@ -121,41 +123,32 @@ Contract ALPHTrade(
         let position = positions[positionIndex]
         checkCaller!(caller == position.owner, Error.NotAnOwner)
 
-        let closeTimestamp = blockTimeStamp!()
-        let timeDifference = closeTimestamp - position.entryTimestamp
-        let hoursPassed = timeDifference / 3600000 + 1
-
-        let hourlyBorrowCost = toI256!(position.colateral) * toI256!(position.leverage) * 5i / 100000i
-        let valueAfterFees = toI256!(position.colateral) - hourlyBorrowCost * toI256!(hoursPassed)
-
-        let btcPrice = oracleId.getValue(b`BTC/USDC`).value
-        let mut closePrice = 0
-        if (position.type == PositionType.Long) {
-            closePrice = btcPrice * 995 / 1000
-        } else {
-            closePrice = btcPrice * 1005 / 1000
-        }
-
-        liquidity = liquidity + position.colateral
-        if (valueAfterFees > 0i) {
-            let mut value = 0i
-            if (position.type == PositionType.Long) {
-                value = (valueAfterFees * 100000000i - (100000000i - toI256!(closePrice) * 100000000i / toI256!(position.entryPrice)) * toI256!(position.colateral) * toI256!(position.leverage)) / 100000000i
-            } else {
-                value = (valueAfterFees * 100000000i - (toI256!(closePrice) * 100000000i / toI256!(position.entryPrice) - 100000000i) * toI256!(position.colateral) * toI256!(position.leverage)) / 100000000i
-            }
-
-            liquidity = liquidity - toU256!(value)
-            transferTokenFromSelf!(caller, usdcId, toU256!(value))
-        }
-
-        positions.remove!(caller, positionIndex)
-        if(positionIndex != positionsIndex - 1) {
-            positions.insert!(caller, positionIndex, positions[positionsIndex - 1])
-            positions.remove!(caller, positionsIndex - 1)
-        }
+        let value = calculateValue(position)
+        liquidity = liquidity + position.colateral - toU256!(value)
+        removePosition(positionIndex)
         positionsIndex = positionsIndex - 1
-        positionsSize = positionsSize - position.colateral * position.leverage
+        let positionSize = position.colateral * position.leverage
+        positionsSize = positionsSize - positionSize
+        transferTokenFromSelf!(caller, usdcId, toU256!(value))
+    }
+
+    @using(assetsInContract = true, updateFields = true, checkExternalCaller = false)
+    pub fn liquidate(positionIndex: U256) -> () {
+        let caller = callerAddress!()
+        let position = positions[positionIndex]
+        let mut value = calculateValue(position)
+        if(value > 0i) {
+            value = 0i
+        }
+        assert!(value <= toI256!(position.colateral) * LIQUIDATION_TRESHOLD_NOMINATOR / LIQUIDATION_TRESHOLD_DENOMINATOR, Error.PositionValueAboveLiquidationThreshold)
+
+        let liquidationFee = position.colateral * LIQUIDATION_FEE_NOMINATOR / LIQUIDATION_FEE_DENOMINATOR
+        liquidity = liquidity + position.colateral - toU256!(value) - liquidationFee
+        removePosition(positionIndex)
+        positionsIndex = positionsIndex - 1
+        let positionSize = position.colateral * position.leverage
+        positionsSize = positionsSize - positionSize
+        transferTokenFromSelf!(caller, usdcId, liquidationFee)
     }
 
     pub fn getPosition(positionIndex: U256) -> Position {
@@ -176,5 +169,53 @@ Contract ALPHTrade(
         }
         
         return userPositions, indexes
+    }
+
+    @using(preapprovedAssets = true)
+    fn addPosition(caller: Address, position: Position) -> () {
+        positions.insert!(caller, positionsIndex, position)
+    }
+
+    @using(assetsInContract = enforced)
+    fn removePosition(positionIndex: U256) -> () {
+        let caller = callerAddress!()
+        let position = positions[positionIndex]
+        let lastPositionIndex = positionsIndex - 1
+
+        positions.remove!(position.owner, positionIndex)
+        if(positionIndex != lastPositionIndex) {
+            positions.insert!(caller, positionIndex, positions[lastPositionIndex])
+            positions.remove!(caller, lastPositionIndex)
+        }
+    }
+
+    @using(checkExternalCaller = false)
+    pub fn calculateValue(position: Position) -> I256 {
+        let closeTimestamp = blockTimeStamp!()
+        let timeDifference = closeTimestamp - position.entryTimestamp
+        let hoursPassed = timeDifference / 3600000 + 1
+
+        let hourlyBorrowCost = toI256!(position.colateral) * toI256!(position.leverage) * 5i / 100000i
+        let valueAfterFees = toI256!(position.colateral) - hourlyBorrowCost * toI256!(hoursPassed)
+
+        let closePrice = getPrice(position.type, false)
+
+        let positionSize = toI256!(position.colateral * position.leverage)
+        let priceDenominator = toI256!(PRICE_DENOMINATOR)
+        if (position.type == PositionType.Long) {
+            return (valueAfterFees * priceDenominator - (priceDenominator - toI256!(closePrice) * priceDenominator / toI256!(position.entryPrice)) * positionSize) / priceDenominator
+        } else {
+            return (valueAfterFees * priceDenominator - (toI256!(closePrice) * priceDenominator / toI256!(position.entryPrice) - priceDenominator) * positionSize) / priceDenominator
+        }
+    }
+
+    @using(checkExternalCaller = false)
+    pub fn getPrice(type: U256, isOpenPrice: Bool) -> U256 {
+        let btcPrice = oracleId.getValue(b`BTC/USDC`).value
+        if ((type == PositionType.Long && isOpenPrice) || (type == PositionType.Short && !isOpenPrice)) {
+            return btcPrice * 1005 / 1000
+        } else {
+            return btcPrice * 995 / 1000
+        }
     }
 }

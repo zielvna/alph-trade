@@ -102,6 +102,10 @@ export namespace ALPHTradeTypes {
       params: CallContractParams<{ positionIndex: bigint }>;
       result: CallContractResult<null>;
     };
+    liquidate: {
+      params: CallContractParams<{ positionIndex: bigint }>;
+      result: CallContractResult<null>;
+    };
     getPosition: {
       params: CallContractParams<{ positionIndex: bigint }>;
       result: CallContractResult<Position>;
@@ -187,6 +191,14 @@ export namespace ALPHTradeTypes {
         ]
       >;
     };
+    calculateValue: {
+      params: CallContractParams<{ position: Position }>;
+      result: CallContractResult<bigint>;
+    };
+    getPrice: {
+      params: CallContractParams<{ type: bigint; isOpenPrice: boolean }>;
+      result: CallContractResult<bigint>;
+    };
   }
   export type CallMethodParams<T extends keyof CallMethodTable> =
     CallMethodTable[T]["params"];
@@ -253,12 +265,27 @@ export namespace ALPHTradeTypes {
       params: SignExecuteContractMethodParams<{ positionIndex: bigint }>;
       result: SignExecuteScriptTxResult;
     };
+    liquidate: {
+      params: SignExecuteContractMethodParams<{ positionIndex: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
     getPosition: {
       params: SignExecuteContractMethodParams<{ positionIndex: bigint }>;
       result: SignExecuteScriptTxResult;
     };
     getPositions: {
       params: SignExecuteContractMethodParams<{ address: Address }>;
+      result: SignExecuteScriptTxResult;
+    };
+    calculateValue: {
+      params: SignExecuteContractMethodParams<{ position: Position }>;
+      result: SignExecuteScriptTxResult;
+    };
+    getPrice: {
+      params: SignExecuteContractMethodParams<{
+        type: bigint;
+        isOpenPrice: boolean;
+      }>;
       result: SignExecuteScriptTxResult;
     };
   }
@@ -281,13 +308,22 @@ class Factory extends ContractFactory<
   }
 
   consts = {
+    TOKEN_DENOMINATOR: BigInt("1000000"),
+    PRICE_DENOMINATOR: BigInt("1000000000"),
+    MIN_LEVERAGE: BigInt("2"),
     MAX_LEVERAGE: BigInt("20"),
-    OPEN_INTEREST_PERCENTAGE_LIMIT: BigInt("50"),
+    OPEN_INTEREST_LIMIT_NOMINATOR: BigInt("50"),
+    OPEN_INTEREST_LIMIT_DENOMINATOR: BigInt("100"),
+    LIQUIDATION_TRESHOLD_NOMINATOR: BigInt("1"),
+    LIQUIDATION_TRESHOLD_DENOMINATOR: BigInt("6"),
+    LIQUIDATION_FEE_NOMINATOR: BigInt("1"),
+    LIQUIDATION_FEE_DENOMINATOR: BigInt("100"),
     Error: {
       InvalidPositionType: BigInt("0"),
       InvalidLeverage: BigInt("1"),
       NotAnOwner: BigInt("2"),
       NotEnoughLiquidity: BigInt("3"),
+      PositionValueAboveLiquidationThreshold: BigInt("4"),
     },
     PositionType: { Long: BigInt("0"), Short: BigInt("1") },
   };
@@ -439,6 +475,17 @@ class Factory extends ContractFactory<
     > => {
       return testMethod(this, "closePosition", params, getContractByCodeHash);
     },
+    liquidate: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { positionIndex: bigint },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<null, { positions?: Map<bigint, Position> }>
+    > => {
+      return testMethod(this, "liquidate", params, getContractByCodeHash);
+    },
     getPosition: async (
       params: TestContractParams<
         ALPHTradeTypes.Fields,
@@ -539,6 +586,50 @@ class Factory extends ContractFactory<
     > => {
       return testMethod(this, "getPositions", params, getContractByCodeHash);
     },
+    addPosition: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { caller: Address; position: Position },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<null, { positions?: Map<bigint, Position> }>
+    > => {
+      return testMethod(this, "addPosition", params, getContractByCodeHash);
+    },
+    removePosition: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { positionIndex: bigint },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<null, { positions?: Map<bigint, Position> }>
+    > => {
+      return testMethod(this, "removePosition", params, getContractByCodeHash);
+    },
+    calculateValue: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { position: Position },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+    > => {
+      return testMethod(this, "calculateValue", params, getContractByCodeHash);
+    },
+    getPrice: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { type: bigint; isOpenPrice: boolean },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+    > => {
+      return testMethod(this, "getPrice", params, getContractByCodeHash);
+    },
   };
 }
 
@@ -546,8 +637,8 @@ class Factory extends ContractFactory<
 export const ALPHTrade = new Factory(
   Contract.fromJson(
     ALPHTradeContractJson,
-    "=36-2+ad=2-2+ea4=2-2+5=2-2+fc=455-1+f=280+7a7e0214696e73657274206174206d617020706174683a2000=85-1+a=700+7a7e021472656d6f7665206174206d617020706174683a2000=25-1+e=40+7a7e0214696e73657274206174206d617020706174683a2000=178+7a7e021472656d6f7665206174206d617020706174683a2000=3146",
-    "03ebdeac64e5fcd41f6bcc67b097d5dca79f6166db66cd04b544fca54e416479",
+    "=56-6+f0=2-2+1f=2-2+b14b02=4452-2+11=40+7a7e0214696e73657274206174206d617020706174683a2000=45-1+9=204+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+a=40+7a7e0214696e73657274206174206d617020706174683a2000=170+7a7e021472656d6f7665206174206d617020706174683a2000=460",
+    "81ebe595ce83b1d022f55b1166a45a86dc1b89fd73626be189dcde6ac6bd4c45",
     AllStructs
   )
 );
@@ -692,6 +783,17 @@ export class ALPHTradeInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
+    liquidate: async (
+      params: ALPHTradeTypes.CallMethodParams<"liquidate">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"liquidate">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "liquidate",
+        params,
+        getContractByCodeHash
+      );
+    },
     getPosition: async (
       params: ALPHTradeTypes.CallMethodParams<"getPosition">
     ): Promise<ALPHTradeTypes.CallMethodResult<"getPosition">> => {
@@ -710,6 +812,28 @@ export class ALPHTradeInstance extends ContractInstance {
         ALPHTrade,
         this,
         "getPositions",
+        params,
+        getContractByCodeHash
+      );
+    },
+    calculateValue: async (
+      params: ALPHTradeTypes.CallMethodParams<"calculateValue">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"calculateValue">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "calculateValue",
+        params,
+        getContractByCodeHash
+      );
+    },
+    getPrice: async (
+      params: ALPHTradeTypes.CallMethodParams<"getPrice">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"getPrice">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "getPrice",
         params,
         getContractByCodeHash
       );
@@ -772,6 +896,11 @@ export class ALPHTradeInstance extends ContractInstance {
     ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"closePosition">> => {
       return signExecuteMethod(ALPHTrade, this, "closePosition", params);
     },
+    liquidate: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"liquidate">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"liquidate">> => {
+      return signExecuteMethod(ALPHTrade, this, "liquidate", params);
+    },
     getPosition: async (
       params: ALPHTradeTypes.SignExecuteMethodParams<"getPosition">
     ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getPosition">> => {
@@ -781,6 +910,16 @@ export class ALPHTradeInstance extends ContractInstance {
       params: ALPHTradeTypes.SignExecuteMethodParams<"getPositions">
     ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getPositions">> => {
       return signExecuteMethod(ALPHTrade, this, "getPositions", params);
+    },
+    calculateValue: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"calculateValue">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"calculateValue">> => {
+      return signExecuteMethod(ALPHTrade, this, "calculateValue", params);
+    },
+    getPrice: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"getPrice">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getPrice">> => {
+      return signExecuteMethod(ALPHTrade, this, "getPrice", params);
     },
   };
 

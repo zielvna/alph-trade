@@ -1,5 +1,5 @@
 import { ALPH_TOKEN_ID, MAP_ENTRY_DEPOSIT, ONE_ALPH, SignerProvider } from '@alephium/web3'
-import { ALPHTradeInstance, ClosePosition, Deposit, OpenPosition, Withdraw } from '../artifacts/ts'
+import { ALPHTradeInstance, ClosePosition, Deposit, Liquidate, OpenPosition, Withdraw } from '../artifacts/ts'
 import { Position } from '../artifacts/ts/types'
 
 export const deposit = async (alphTrade: ALPHTradeInstance, amount: bigint, signer: SignerProvider) => {
@@ -41,4 +41,8 @@ export const closePosition = async (alphTrade: ALPHTradeInstance, positionIndex:
 export const getPosition = async (alphTrade: ALPHTradeInstance, positionIndex: bigint): Promise<Position> => {
   const result = await alphTrade.view.getPosition({ args: { positionIndex } })
   return result.returns
+}
+
+export const liquidate = async (alphTrade: ALPHTradeInstance, positionIndex: bigint, signer: SignerProvider) => {
+  return await Liquidate.execute(signer, { initialFields: { alphTrade: alphTrade.address, positionIndex } })
 }

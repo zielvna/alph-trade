@@ -13,3 +13,7 @@ TxScript OpenPosition(alphTrade: ALPHTrade, type: U256, colateral: U256, leverag
 TxScript ClosePosition(alphTrade: ALPHTrade, positionIndex: U256) {
     alphTrade.closePosition(positionIndex)
 }
+
+TxScript Liquidate(alphTrade: ALPHTrade, positionIndex: U256) {
+    alphTrade.liquidate(positionIndex)
+}

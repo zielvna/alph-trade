@@ -4,7 +4,8 @@ import { ONE_ALPH, web3 } from '@alephium/web3'
 import { getSigner } from '@alephium/web3-test'
 import { mint } from '../src/tokenUtils'
 import { MAX_VALUE, ONE_TOKEN } from '../src/consts'
-import { closePosition, deposit, getPosition, openPosition } from '../src/alphTradeUtils'
+import { closePosition, deposit, getPosition, liquidate, openPosition } from '../src/alphTradeUtils'
+import { setValue } from '../src/oracleUtils'
 
 let signer: PrivateKeyWallet
 
@@ -79,5 +80,28 @@ describe('token tests', () => {
     expect(alphTradeUSDCBalanceAfter).toBe(4020001n)
     // 1 - (1 * 2 * 0.00005) - (1 - (50000 * 0.995) / (50000 * 1.005)) * 1 * 2 = 0.979999...
     expect(signerUSDCBalanceAfter).toBe(979999n)
+  })
+
+  test('liquidate works', async () => {
+    const USDC = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
+    const oracle = await deployOracle(50000_00000000n, signer)
+    const alphTrade = await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, oracle.contractId, signer)
+
+    await mint(USDC, ONE_TOKEN * 5n, signer)
+    await deposit(alphTrade, ONE_TOKEN * 4n, signer)
+    await openPosition(alphTrade, 0n, ONE_TOKEN, 2n, signer)
+    await setValue(oracle, 'BTC/USDC', 27500_00000000n, signer)
+    await liquidate(alphTrade, 0n, signer)
+
+    const positionsIndex = (await alphTrade.fetchState()).fields.positionsIndex
+    const positionsSize = (await alphTrade.fetchState()).fields.positionsSize
+    const liquidity = (await alphTrade.fetchState()).fields.liquidity
+    const alphTradeUSDCBalance = await balanceOf(USDC.contractId, alphTrade.address)
+    const signerUSDCBalance = await balanceOf(USDC.contractId, signer.address)
+    expect(positionsIndex).toBe(0n)
+    expect(positionsSize).toBe(0n)
+    expect(liquidity).toBe(4990000n)
+    expect(alphTradeUSDCBalance).toBe(4990000n)
+    expect(signerUSDCBalance).toBe(10000n)
   })
 })

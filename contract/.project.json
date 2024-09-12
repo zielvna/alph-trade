@@ -12,19 +12,19 @@
   "infos": {
     "ALPHTrade": {
       "sourceFile": "ALPHTrade.ral",
-      "sourceCodeHash": "60a09fb2d9fb46ecf90f67011424aede41f79f1e15e9d22e05b0ec5b0ba3997f",
-      "bytecodeDebugPatch": "=36-2+ad=2-2+ea4=2-2+5=2-2+fc=455-1+f=280+7a7e0214696e73657274206174206d617020706174683a2000=85-1+a=700+7a7e021472656d6f7665206174206d617020706174683a2000=25-1+e=40+7a7e0214696e73657274206174206d617020706174683a2000=178+7a7e021472656d6f7665206174206d617020706174683a2000=3146",
-      "codeHashDebug": "03ebdeac64e5fcd41f6bcc67b097d5dca79f6166db66cd04b544fca54e416479"
+      "sourceCodeHash": "fc1beb209303d04092a1b72614aa9a9a7d9666bcbb26fb1198d4dc5e956322c1",
+      "bytecodeDebugPatch": "=56-6+f0=2-2+1f=2-2+b14b02=4452-2+11=40+7a7e0214696e73657274206174206d617020706174683a2000=45-1+9=204+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+a=40+7a7e0214696e73657274206174206d617020706174683a2000=170+7a7e021472656d6f7665206174206d617020706174683a2000=460",
+      "codeHashDebug": "81ebe595ce83b1d022f55b1166a45a86dc1b89fd73626be189dcde6ac6bd4c45"
     },
     "ClosePosition": {
       "sourceFile": "scripts/ALPHTrade.ral",
-      "sourceCodeHash": "720ebbb8ffa06ecefe139e1d0f14150e5bdfc3d9ed092a87550f891fed60edcb",
+      "sourceCodeHash": "691a0e2cbd13535c1b84ed3ab10ee89a68e36924d968990fd97370a004d5d24c",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
     "Deposit": {
       "sourceFile": "scripts/ALPHTrade.ral",
-      "sourceCodeHash": "720ebbb8ffa06ecefe139e1d0f14150e5bdfc3d9ed092a87550f891fed60edcb",
+      "sourceCodeHash": "691a0e2cbd13535c1b84ed3ab10ee89a68e36924d968990fd97370a004d5d24c",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
@@ -40,6 +40,12 @@
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
+    "Liquidate": {
+      "sourceFile": "scripts/ALPHTrade.ral",
+      "sourceCodeHash": "691a0e2cbd13535c1b84ed3ab10ee89a68e36924d968990fd97370a004d5d24c",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
     "Mint": {
       "sourceFile": "scripts/token.ral",
       "sourceCodeHash": "6f96dff573e571ed0c1c34b569f19e8b505bd5a5cb8dd8a42d74bf9ed0843626",
@@ -48,7 +54,7 @@
     },
     "OpenPosition": {
       "sourceFile": "scripts/ALPHTrade.ral",
-      "sourceCodeHash": "720ebbb8ffa06ecefe139e1d0f14150e5bdfc3d9ed092a87550f891fed60edcb",
+      "sourceCodeHash": "691a0e2cbd13535c1b84ed3ab10ee89a68e36924d968990fd97370a004d5d24c",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
@@ -66,7 +72,7 @@
     },
     "Position": {
       "sourceFile": "ALPHTrade.ral",
-      "sourceCodeHash": "60a09fb2d9fb46ecf90f67011424aede41f79f1e15e9d22e05b0ec5b0ba3997f",
+      "sourceCodeHash": "fc1beb209303d04092a1b72614aa9a9a7d9666bcbb26fb1198d4dc5e956322c1",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
@@ -84,7 +90,7 @@
     },
     "Withdraw": {
       "sourceFile": "scripts/ALPHTrade.ral",
-      "sourceCodeHash": "720ebbb8ffa06ecefe139e1d0f14150e5bdfc3d9ed092a87550f891fed60edcb",
+      "sourceCodeHash": "691a0e2cbd13535c1b84ed3ab10ee89a68e36924d968990fd97370a004d5d24c",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     }
