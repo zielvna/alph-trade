@@ -11,9 +11,20 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        white: "#ffffff",
+        black: "#000000",
+        gray: "#808080",
+        red: "#ff0000",
+        green: "#00ff00",
+        blue: "#0000ff",
       },
     },
   },
   plugins: [],
+  safelist: [
+    {
+      pattern: /bg-+/,
+    },
+  ],
 };
 export default config;
