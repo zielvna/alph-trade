@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@alephium/web3": "^1.7.3",
     "@alephium/web3-react": "^1.7.3",
     "next": "14.2.10",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@types/node": "^20",

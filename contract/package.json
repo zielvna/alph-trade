@@ -11,7 +11,9 @@
     "deploy": "npx ts-node scripts/deploy.ts",
     "lint": "eslint . --ext ts",
     "lint:fix": "eslint . --fix --ext ts",
-    "test": "jest -i --config ./jest-config.json"
+    "test": "jest -i --config ./jest-config.json",
+    "copy": "cp artifacts/ ../app/app/artifacts/ -r",
+    "all": "npm run compile && npm run test && npm run copy"
   },
   "dependencies": {
     "@alephium/cli": "^1.6.0",
