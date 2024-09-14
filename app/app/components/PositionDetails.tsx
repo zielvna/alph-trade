@@ -44,7 +44,6 @@ export const PositionDetails: React.FC<Props> = ({
     leverage
   );
   const pnl = calculatePnl(colateral, value);
-  console.log(colateral, value, pnl);
   const pnlPercentage = calculatePnlPercentage(colateral, value);
   const pnlClass = pnl < 0 ? "text-red" : "text-green";
 
