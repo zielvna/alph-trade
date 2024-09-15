@@ -13,10 +13,23 @@ import { formatNumber } from "../utils/ui";
 import { useStore } from "../store/store";
 import { useWallet } from "@alephium/web3-react";
 import { waitForTxConfirmation } from "@alephium/web3";
-import { balanceOf, closePosition, getPositions } from "../utils/web3";
+import {
+  balanceOf,
+  closePosition,
+  getLiquidity,
+  getOpenInterest,
+  getPositions,
+} from "../utils/web3";
 
 export const Positions: React.FC = () => {
-  const { currentPrice, positions, setBalance, setPositions } = useStore();
+  const {
+    currentPrice,
+    positions,
+    setBalance,
+    setPositions,
+    setLiquidity,
+    setOpenInterest,
+  } = useStore();
   const { account, signer } = useWallet();
 
   useEffect(() => {
@@ -40,8 +53,26 @@ export const Positions: React.FC = () => {
 
       const positions = await getPositions(account.address);
       setPositions(positions);
+
+      const liquidity = await getLiquidity();
+      setLiquidity(liquidity);
+
+      const openInterest = await getOpenInterest();
+      setOpenInterest(openInterest);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const liquidity = await getLiquidity();
+      setLiquidity(liquidity);
+
+      const openInterest = await getOpenInterest();
+      setOpenInterest(openInterest);
+    };
+
+    fetchData();
+  }, [setLiquidity, setOpenInterest]);
 
   return (
     <div className="w-full">

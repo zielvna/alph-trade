@@ -54,7 +54,8 @@ export async function deployALPHTrade(
         oracleId,
         balance: MAX_VALUE,
         liquidity: 0n,
-        positionsSize: 0n,
+        longPositionsSize: 0n,
+        shortPositionsSize: 0n,
         positionsIndex: 0n
       },
       issueTokenAmount: MAX_VALUE

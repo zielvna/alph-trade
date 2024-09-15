@@ -16,3 +16,6 @@ export const TOKEN_DECIMAL = 6n;
 export const TOKEN_DENOMINATOR = 10n ** TOKEN_DECIMAL;
 export const PRICE_DECIMAL = 8n;
 export const PRICE_DENOMINATOR = 10n ** PRICE_DECIMAL;
+
+export const MAX_VALUE = 2n ** 256n - 1n;
+export const MIN_COLATERAL = TOKEN_DENOMINATOR;

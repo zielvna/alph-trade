@@ -5,14 +5,19 @@ import { Color } from "../enums/color";
 import { Button, ButtonSize } from "./Button";
 import { formatAddress } from "../utils/ui";
 import { waitForTxConfirmation } from "@alephium/web3";
-import { TOKEN_DENOMINATOR, USDC_CONTRACT_ID } from "../utils/consts";
+import {
+  ALPH_TRADE_CONTRACT_ID,
+  TOKEN_DENOMINATOR,
+  USDC_CONTRACT_ID,
+} from "../utils/consts";
 import { balanceOf, getBTCPrice, mint } from "../utils/web3";
 import { useStore } from "../store/store";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export const Header: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
-  const { setBalance, setCurrentPrice } = useStore();
+  const { setBalance, setCurrentPrice, setLpBalance } = useStore();
   const { connect, disconnect } = useConnect();
   const { account, signer } = useWallet();
 
@@ -25,11 +30,16 @@ export const Header: React.FC = () => {
       if (account) {
         const balance = await balanceOf(USDC_CONTRACT_ID, account.address);
         setBalance(balance);
+        const lpBalance = await balanceOf(
+          ALPH_TRADE_CONTRACT_ID,
+          account.address
+        );
+        setLpBalance(lpBalance);
       }
     };
 
     updateBalance();
-  }, [account, setBalance]);
+  }, [account, setBalance, setLpBalance]);
 
   useEffect(() => {
     const updateCurrentPrice = async () => {
@@ -72,7 +82,14 @@ export const Header: React.FC = () => {
 
   return (
     <header className="h-20 px-4 flex justify-between items-center">
-      <h1 className="text-2xl">alph trade</h1>
+      <div className="flex items-center gap-4">
+        <h1 className="text-2xl">
+          <Link href="/">alph trade</Link>
+        </h1>
+        <div className="text-lg">
+          <Link href="/earn">earn</Link>
+        </div>
+      </div>
       <div className="flex gap-4">
         <div className="w-[180px]">
           <Button

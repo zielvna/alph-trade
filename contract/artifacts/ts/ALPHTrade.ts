@@ -47,7 +47,8 @@ export namespace ALPHTradeTypes {
     oracleId: HexString;
     balance: bigint;
     liquidity: bigint;
-    positionsSize: bigint;
+    longPositionsSize: bigint;
+    shortPositionsSize: bigint;
     positionsIndex: bigint;
   };
 
@@ -310,10 +311,9 @@ class Factory extends ContractFactory<
   consts = {
     TOKEN_DENOMINATOR: BigInt("1000000"),
     PRICE_DENOMINATOR: BigInt("1000000000"),
+    MIN_COLATERAL: BigInt("1000000"),
     MIN_LEVERAGE: BigInt("2"),
     MAX_LEVERAGE: BigInt("20"),
-    OPEN_INTEREST_LIMIT_NOMINATOR: BigInt("50"),
-    OPEN_INTEREST_LIMIT_DENOMINATOR: BigInt("100"),
     LIQUIDATION_TRESHOLD_NOMINATOR: BigInt("1"),
     LIQUIDATION_TRESHOLD_DENOMINATOR: BigInt("6"),
     LIQUIDATION_FEE_NOMINATOR: BigInt("1"),
@@ -324,6 +324,7 @@ class Factory extends ContractFactory<
       NotAnOwner: BigInt("2"),
       NotEnoughLiquidity: BigInt("3"),
       PositionValueAboveLiquidationThreshold: BigInt("4"),
+      NotEnoughColateral: BigInt("5"),
     },
     PositionType: { Long: BigInt("0"), Short: BigInt("1") },
   };
@@ -637,8 +638,8 @@ class Factory extends ContractFactory<
 export const ALPHTrade = new Factory(
   Contract.fromJson(
     ALPHTradeContractJson,
-    "=56-6+f0=2-2+1f=2-2+b14b02=4452-2+11=40+7a7e0214696e73657274206174206d617020706174683a2000=45-1+9=204+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+a=40+7a7e0214696e73657274206174206d617020706174683a2000=170+7a7e021472656d6f7665206174206d617020706174683a2000=460",
-    "81ebe595ce83b1d022f55b1166a45a86dc1b89fd73626be189dcde6ac6bd4c45",
+    "=56-2+5=1-3=2+834=2+5=2-2+66=4652-2+11=40+7a7e0214696e73657274206174206d617020706174683a2000=45-1+9=204+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+a=40+7a7e0214696e73657274206174206d617020706174683a2000=170+7a7e021472656d6f7665206174206d617020706174683a2000=460",
+    "74eed8f5e57154d6f6ab92214bec1542607fb12f9c87afd471767f0672264a4a",
     AllStructs
   )
 );

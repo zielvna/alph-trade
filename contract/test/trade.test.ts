@@ -24,22 +24,26 @@ describe('token tests', () => {
     await deposit(alphTrade, ONE_TOKEN * 4n, signer)
 
     const positionsIndexBefore = (await alphTrade.fetchState()).fields.positionsIndex
-    const positionsSizeBefore = (await alphTrade.fetchState()).fields.positionsSize
+    const longPositionsSizeBefore = (await alphTrade.fetchState()).fields.longPositionsSize
+    const shortPositionsSizeBefore = (await alphTrade.fetchState()).fields.shortPositionsSize
     const alphTradeUSDCBalance = await balanceOf(USDC.contractId, alphTrade.address)
     const signerUSDCBalance = await balanceOf(USDC.contractId, signer.address)
     expect(alphTradeUSDCBalance).toBe(ONE_TOKEN * 4n)
     expect(signerUSDCBalance).toBe(ONE_TOKEN)
     expect(positionsIndexBefore).toBe(0n)
-    expect(positionsSizeBefore).toBe(0n)
+    expect(longPositionsSizeBefore).toBe(0n)
+    expect(shortPositionsSizeBefore).toBe(0n)
 
     await openPosition(alphTrade, 0n, ONE_TOKEN, 2n, signer)
 
     const positionsIndex = (await alphTrade.fetchState()).fields.positionsIndex
-    const positionsSize = (await alphTrade.fetchState()).fields.positionsSize
+    const longPositionsSize = (await alphTrade.fetchState()).fields.longPositionsSize
+    const shortPositionsSize = (await alphTrade.fetchState()).fields.shortPositionsSize
     const alphTradeUSDCBalanceAfter = await balanceOf(USDC.contractId, alphTrade.address)
     const signerUSDCBalanceAfter = await balanceOf(USDC.contractId, signer.address)
     expect(positionsIndex).toBe(1n)
-    expect(positionsSize).toBe(ONE_TOKEN * 2n)
+    expect(longPositionsSize).toBe(ONE_TOKEN * 2n)
+    expect(shortPositionsSize).toBe(0n)
     expect(alphTradeUSDCBalanceAfter).toBe(ONE_TOKEN * 5n)
     expect(signerUSDCBalanceAfter).toBe(0n)
 
@@ -61,9 +65,11 @@ describe('token tests', () => {
     await openPosition(alphTrade, 0n, ONE_TOKEN, 2n, signer)
 
     const positionsIndexBefore = (await alphTrade.fetchState()).fields.positionsIndex
-    const positionsSizeBefore = (await alphTrade.fetchState()).fields.positionsSize
+    const longPositionsSizeBefore = (await alphTrade.fetchState()).fields.longPositionsSize
+    const shortPositionsSizeBefore = (await alphTrade.fetchState()).fields.shortPositionsSize
     expect(positionsIndexBefore).toBe(1n)
-    expect(positionsSizeBefore).toBe(ONE_TOKEN * 2n)
+    expect(longPositionsSizeBefore).toBe(ONE_TOKEN * 2n)
+    expect(shortPositionsSizeBefore).toBe(0n)
     const alphTradeUSDCBalance = await balanceOf(USDC.contractId, alphTrade.address)
     const signerUSDCBalance = await balanceOf(USDC.contractId, signer.address)
     expect(alphTradeUSDCBalance).toBe(ONE_TOKEN * 5n)
@@ -72,9 +78,11 @@ describe('token tests', () => {
     await closePosition(alphTrade, 0n, signer)
 
     const positionsIndex = (await alphTrade.fetchState()).fields.positionsIndex
-    const positionsSize = (await alphTrade.fetchState()).fields.positionsSize
+    const longPositionsSize = (await alphTrade.fetchState()).fields.longPositionsSize
+    const shortPositionsSize = (await alphTrade.fetchState()).fields.shortPositionsSize
     expect(positionsIndex).toBe(0n)
-    expect(positionsSize).toBe(0n)
+    expect(longPositionsSize).toBe(0n)
+    expect(shortPositionsSize).toBe(0n)
     const alphTradeUSDCBalanceAfter = await balanceOf(USDC.contractId, alphTrade.address)
     const signerUSDCBalanceAfter = await balanceOf(USDC.contractId, signer.address)
     expect(alphTradeUSDCBalanceAfter).toBe(4020001n)
@@ -94,12 +102,14 @@ describe('token tests', () => {
     await liquidate(alphTrade, 0n, signer)
 
     const positionsIndex = (await alphTrade.fetchState()).fields.positionsIndex
-    const positionsSize = (await alphTrade.fetchState()).fields.positionsSize
+    const longPositionsSize = (await alphTrade.fetchState()).fields.longPositionsSize
+    const shortPositionsSize = (await alphTrade.fetchState()).fields.shortPositionsSize
     const liquidity = (await alphTrade.fetchState()).fields.liquidity
     const alphTradeUSDCBalance = await balanceOf(USDC.contractId, alphTrade.address)
     const signerUSDCBalance = await balanceOf(USDC.contractId, signer.address)
     expect(positionsIndex).toBe(0n)
-    expect(positionsSize).toBe(0n)
+    expect(longPositionsSize).toBe(0n)
+    expect(shortPositionsSize).toBe(0n)
     expect(liquidity).toBe(4990000n)
     expect(alphTradeUSDCBalance).toBe(4990000n)
     expect(signerUSDCBalance).toBe(10000n)

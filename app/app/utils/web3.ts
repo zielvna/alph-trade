@@ -9,11 +9,18 @@ import {
 import {
   ALPH_TRADE,
   ALPH_TRADE_CONTRACT_ID,
+  MAX_VALUE,
   ORACLE,
   USDC_CONTRACT_ID,
 } from "./consts";
 import { PositionWithIndex } from "./types";
-import { ClosePosition, Mint, OpenPosition } from "../artifacts/ts";
+import {
+  ClosePosition,
+  Deposit,
+  Mint,
+  OpenPosition,
+  Withdraw,
+} from "../artifacts/ts";
 import { PositionType } from "../enums/position-type";
 
 export const balanceOf = async (
@@ -101,4 +108,36 @@ export const getValue = async (key: string) => {
     })
   ).returns;
   return result;
+};
+
+export const deposit = async (amount: bigint, signer: SignerProvider) => {
+  return await Deposit.execute(signer, {
+    initialFields: { alphTrade: ALPH_TRADE_CONTRACT_ID, amount },
+    tokens: [{ id: USDC_CONTRACT_ID, amount }],
+  });
+};
+
+export const withdraw = async (amount: bigint, signer: SignerProvider) => {
+  return await Withdraw.execute(signer, {
+    initialFields: { alphTrade: ALPH_TRADE_CONTRACT_ID, amount },
+    tokens: [{ id: ALPH_TRADE_CONTRACT_ID, amount }],
+  });
+};
+
+export const getLpTokenSupply = async () => {
+  const state = await ALPH_TRADE.fetchState();
+  return MAX_VALUE - state.fields.balance;
+};
+
+export const getLiquidity = async () => {
+  return (await ALPH_TRADE.fetchState()).fields.liquidity;
+};
+
+export const getOpenInterest = async () => {
+  const state = await ALPH_TRADE.fetchState();
+  return {
+    long: state.fields.longPositionsSize,
+    short: state.fields.shortPositionsSize,
+    total: state.fields.longPositionsSize + state.fields.shortPositionsSize,
+  };
 };

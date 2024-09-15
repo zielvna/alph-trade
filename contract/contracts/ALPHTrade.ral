@@ -16,17 +16,17 @@ Contract ALPHTrade(
     oracleId: IOracle,
     mut balance: U256,
     mut liquidity: U256,
-    mut positionsSize: U256,
+    mut longPositionsSize: U256,
+    mut shortPositionsSize: U256,
     mut positionsIndex: U256
 ) implements IFungibleToken {
     mapping[U256, Position] positions
 
     const TOKEN_DENOMINATOR = 10 ** 6
     const PRICE_DENOMINATOR = 10 ** 9
+    const MIN_COLATERAL = TOKEN_DENOMINATOR
     const MIN_LEVERAGE = 2
     const MAX_LEVERAGE = 20
-    const OPEN_INTEREST_LIMIT_NOMINATOR = 50
-    const OPEN_INTEREST_LIMIT_DENOMINATOR = 100
     const LIQUIDATION_TRESHOLD_NOMINATOR = 1i
     const LIQUIDATION_TRESHOLD_DENOMINATOR = 6i
     const LIQUIDATION_FEE_NOMINATOR = 1
@@ -38,6 +38,7 @@ Contract ALPHTrade(
         NotAnOwner = 2
         NotEnoughLiquidity = 3
         PositionValueAboveLiquidationThreshold = 4
+        NotEnoughColateral = 5
     }
 
     enum PositionType {
@@ -82,7 +83,7 @@ Contract ALPHTrade(
             transferTokenToSelf!(callerAddress!(), usdcId, usdcAmount)
             transferTokenFromSelf!(callerAddress!(), selfTokenId!(), usdcAmount)
         } else {
-            let lpAmount = usdcAmount / liquidity * (u256Max!() - balance)
+            let lpAmount = usdcAmount * TOKEN_DENOMINATOR * (u256Max!() - balance) / liquidity / TOKEN_DENOMINATOR
             liquidity = liquidity + usdcAmount
             balance = balance - lpAmount
 
@@ -93,7 +94,9 @@ Contract ALPHTrade(
 
     @using(assetsInContract = true, preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
     pub fn withdraw(lpAmount: U256) -> () {
-        let usdcAmount = lpAmount * TOKEN_DENOMINATOR / (u256Max!() - balance) * liquidity / TOKEN_DENOMINATOR
+        let openInterest = longPositionsSize + shortPositionsSize
+        let usdcAmount = lpAmount * TOKEN_DENOMINATOR * liquidity / (u256Max!() - balance) / TOKEN_DENOMINATOR
+        assert!(usdcAmount <= liquidity - openInterest, Error.NotEnoughLiquidity)
         liquidity = liquidity - usdcAmount
         balance = balance + lpAmount
 
@@ -105,15 +108,24 @@ Contract ALPHTrade(
     pub fn openPosition(type: U256, colateral: U256, leverage: U256) -> () {
         let caller = callerAddress!()
         let entryTimestamp = blockTimeStamp!()
+        assert!(colateral >= MIN_COLATERAL, Error.NotEnoughColateral)
         assert!(type == PositionType.Long || type == PositionType.Short, Error.InvalidPositionType)
         assert!(leverage >= MIN_LEVERAGE && leverage <= MAX_LEVERAGE, Error.InvalidLeverage)
         let positionSize = colateral * leverage
-        assert!(positionsSize + positionSize <= liquidity * OPEN_INTEREST_LIMIT_NOMINATOR / OPEN_INTEREST_LIMIT_DENOMINATOR, Error.NotEnoughLiquidity)
+        if (type == PositionType.Long) {
+            assert!(longPositionsSize + positionSize <= liquidity / 2, Error.NotEnoughLiquidity)
+        } else {
+            assert!(shortPositionsSize + positionSize <= liquidity / 2, Error.NotEnoughLiquidity)
+        }
 
         let entryPrice = getPrice(type, true)
         addPosition{caller -> ALPH: mapEntryDeposit!()}(caller, Position { owner: caller, type, colateral, leverage, entryPrice, entryTimestamp })
         positionsIndex = positionsIndex + 1
-        positionsSize = positionsSize + positionSize
+        if (type == PositionType.Long) {
+            longPositionsSize = longPositionsSize + positionSize
+        } else {
+            shortPositionsSize = shortPositionsSize + positionSize
+        }
         transferTokenToSelf!(caller, usdcId, colateral)
     }
 
@@ -128,7 +140,11 @@ Contract ALPHTrade(
         removePosition(positionIndex)
         positionsIndex = positionsIndex - 1
         let positionSize = position.colateral * position.leverage
-        positionsSize = positionsSize - positionSize
+        if (position.type == PositionType.Long) {
+            longPositionsSize = longPositionsSize - positionSize
+        } else {
+            shortPositionsSize = shortPositionsSize - positionSize
+        }
         transferTokenFromSelf!(caller, usdcId, toU256!(value))
     }
 
@@ -147,7 +163,11 @@ Contract ALPHTrade(
         removePosition(positionIndex)
         positionsIndex = positionsIndex - 1
         let positionSize = position.colateral * position.leverage
-        positionsSize = positionsSize - positionSize
+        if (position.type == PositionType.Long) {
+            longPositionsSize = longPositionsSize - positionSize
+        } else {
+            shortPositionsSize = shortPositionsSize - positionSize
+        }
         transferTokenFromSelf!(caller, usdcId, liquidationFee)
     }
 

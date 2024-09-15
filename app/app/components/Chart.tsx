@@ -6,7 +6,7 @@ import { formatNumber } from "../utils/ui";
 import { Color } from "../enums/color";
 import { PRICE_DECIMAL } from "../utils/consts";
 
-export const Chart: React.FC = () => {
+const Chart: React.FC = () => {
   const [lastPrice, setLastPrice] = useState(0n);
   const [priceClass, setPriceClass] = useState(Color.BLACK);
   const { currentPrice } = useStore();
@@ -51,14 +51,14 @@ export const Chart: React.FC = () => {
 
       script.addEventListener("load", () => {
         if (container.current) {
-          container.current.style.height = "532px";
+          container.current.style.height = "556px";
         }
       });
     }
   }, []);
 
   return (
-    <div className="flex flex-col gap-2 w-full ml-4">
+    <div className="flex flex-col gap-2 grow ml-4">
       <div className="flex items-center gap-2">
         <CoinIcon coin={Coin.BTC} />
         <p className="text-xl">
