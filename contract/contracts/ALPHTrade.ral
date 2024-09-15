@@ -238,4 +238,20 @@ Contract ALPHTrade(
             return btcPrice * 995 / 1000
         }
     }
+
+    pub fn getAllPositions(offset: U256) -> ([Position; 35], [U256; 35], U256) {
+        let mut userPositions = [Position { owner: nullContractAddress!(), type: 0, colateral: 0, leverage: 0, entryPrice: 0, entryTimestamp: 0 }; 35]
+        let mut indexes = [0; 35]
+        let mut i = 0
+
+        for (let mut j = offset; j < positionsIndex; j = j + 1) {
+            if (positions.contains!(j)) {
+                userPositions[i] = positions[j]
+                indexes[i] = j
+                i = i + 1
+            }
+        }
+        
+        return userPositions, indexes, positionsIndex
+    }
 }

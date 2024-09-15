@@ -13,6 +13,7 @@ interface Store {
     total: bigint;
   };
   positions: PositionWithIndex[];
+  allPositions: PositionWithIndex[];
   setBalance: (balance: bigint) => void;
   setLpBalance: (lpBalance: bigint) => void;
   setCurrentPrice: (entryPrice: bigint) => void;
@@ -23,8 +24,8 @@ interface Store {
     short: bigint;
     total: bigint;
   }) => void;
-  addPosition: (position: PositionWithIndex) => void;
   setPositions: (positions: PositionWithIndex[]) => void;
+  setAllPositions: (positions: PositionWithIndex[]) => void;
 }
 
 export const useStore = create<Store>((set) => ({
@@ -39,6 +40,7 @@ export const useStore = create<Store>((set) => ({
     total: 0n,
   },
   positions: [],
+  allPositions: [],
   setBalance: (balance) =>
     set(() => ({
       balance,
@@ -63,12 +65,12 @@ export const useStore = create<Store>((set) => ({
     set(() => ({
       openInterest,
     })),
-  addPosition: (position) =>
-    set((state) => ({
-      positions: [...state.positions, position],
-    })),
   setPositions: (positions) =>
     set(() => ({
       positions,
+    })),
+  setAllPositions: (positions) =>
+    set(() => ({
+      allPositions: positions,
     })),
 }));

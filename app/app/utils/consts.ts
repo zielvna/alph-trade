@@ -19,3 +19,4 @@ export const PRICE_DENOMINATOR = 10n ** PRICE_DECIMAL;
 
 export const MAX_VALUE = 2n ** 256n - 1n;
 export const MIN_COLATERAL = TOKEN_DENOMINATOR;
+export const PNL_LIQUIDATION_TRESHOLD = -(5 / 6) * 100;

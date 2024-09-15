@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { Color } from "../enums/color";
 import { Button, ButtonSize } from "./Button";
 import { Input } from "./Input";
-import { calculateAmount, calculateLpTokens } from "../utils/math";
+import {
+  calculateAmount,
+  calculateAvailableLiquidity,
+  calculateLpTokens,
+} from "../utils/math";
 import { useWallet } from "@alephium/web3-react";
 import {
   ALPH_TRADE_CONTRACT_ID,
@@ -116,10 +120,15 @@ export const LiquiditySidePanel: React.FC = () => {
       : (Number(lpBalance) / Number(TOKEN_DENOMINATOR)).toFixed(
           Number(TOKEN_DECIMAL)
         );
+  const availableLiquidity = calculateAvailableLiquidity(
+    formatNumber(Number(liquidity * 2n), Number(TOKEN_DECIMAL)),
+    formatNumber(Number(openInterest.total), Number(TOKEN_DECIMAL))
+  );
   const isAmountCorrect =
     Number(amount) > 0 &&
     BigInt(Number(amount) * Number(TOKEN_DENOMINATOR)) <=
-      (liquidityType === LiquidityType.DEPOSIT ? balance : lpBalance);
+      (liquidityType === LiquidityType.DEPOSIT ? balance : lpBalance) &&
+    Number(amount) < availableLiquidity;
 
   return (
     <div className="w-[360px] flex flex-col gap-4 p-4">
@@ -169,13 +178,7 @@ export const LiquiditySidePanel: React.FC = () => {
           />
         </div>
         {liquidityType === LiquidityType.WITHDRAW && (
-          <>
-            available liquidity: $
-            {formatNumber(
-              Number(liquidity - openInterest.total),
-              Number(TOKEN_DECIMAL)
-            ).toFixed(2)}
-          </>
+          <>available liquidity: ${availableLiquidity.toFixed(2)}</>
         )}
       </div>
       <Button

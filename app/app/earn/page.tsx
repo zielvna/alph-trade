@@ -3,6 +3,7 @@
 import { web3 } from "@alephium/web3";
 import { LiquiditySidePanel } from "../components/LiquiditySidePanel";
 import { Stats } from "../components/Stats";
+import { Liquidations } from "../components/Liquidations";
 
 web3.setCurrentNodeProvider("http://127.0.0.1:22973");
 
@@ -13,6 +14,7 @@ export default function Earn() {
         <Stats />
         <LiquiditySidePanel />
       </div>
+      <Liquidations />
     </>
   );
 }

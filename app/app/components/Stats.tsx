@@ -1,19 +1,23 @@
 import { useEffect } from "react";
 import { getLiquidity, getLpTokenSupply, getOpenInterest } from "../utils/web3";
-import { TOKEN_DECIMAL } from "../utils/consts";
+import { PRICE_DECIMAL, TOKEN_DECIMAL } from "../utils/consts";
 import { formatNumber } from "../utils/ui";
 import {
   calculateLpTokenPrice,
   calculateOpenInterestPercentage,
+  calculateValue,
 } from "../utils/math";
 import { ProgressBar } from "./ProgressBar";
 import { useStore } from "../store/store";
+import { PositionType } from "../enums/position-type";
 
 export const Stats: React.FC = () => {
   const {
     lpTokenSupply,
     liquidity,
     openInterest,
+    currentPrice,
+    allPositions,
     setLpTokenSupply,
     setLiquidity,
     setOpenInterest,
@@ -37,6 +41,20 @@ export const Stats: React.FC = () => {
     Number(openInterest.total)
   );
   const shortOpenInterestPercentage = 100 - longOpenInterestPercentage;
+
+  const totalUnrealizedPnl = allPositions.reduce(
+    (acc, position) =>
+      acc -
+      formatNumber(Number(position.colateral), Number(TOKEN_DECIMAL)) +
+      calculateValue(
+        position.type === 0n ? PositionType.LONG : PositionType.SHORT,
+        formatNumber(Number(position.entryPrice), Number(PRICE_DECIMAL)),
+        formatNumber(Number(currentPrice), Number(PRICE_DECIMAL)),
+        formatNumber(Number(position.colateral), Number(TOKEN_DECIMAL)),
+        Number(position.leverage)
+      ),
+    0
+  );
 
   return (
     <div className="grow">
@@ -75,8 +93,15 @@ export const Stats: React.FC = () => {
             ).toFixed(2)}
           </p>
         </div>
+        <div className="basis-full p-4 h-fit">
+          <p className="text-lg">unrealized p&l</p>
+          <p className="text-xl">
+            {totalUnrealizedPnl >= 0 ? "+" : "-"}$
+            {Math.abs(totalUnrealizedPnl).toFixed(2)}
+          </p>
+        </div>
       </div>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="flex flex-col gap-2 p-4">
         <p className="text-lg">market sentiment</p>
         <ProgressBar
           number={longOpenInterestPercentage}

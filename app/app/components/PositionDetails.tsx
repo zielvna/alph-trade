@@ -1,6 +1,8 @@
 import { Coin } from "../enums/coin";
 import { Color } from "../enums/color";
+import { PositionDetailsType } from "../enums/position-details-type";
 import { PositionType } from "../enums/position-type";
+import { PNL_LIQUIDATION_TRESHOLD } from "../utils/consts";
 import {
   calculateLiquidationPrice,
   calculatePnl,
@@ -12,6 +14,7 @@ import { CoinIcon } from "./CoinIcon";
 
 interface Props {
   coin: Coin;
+  type: PositionDetailsType;
   positionType: PositionType;
   colateral: number;
   leverage: number;
@@ -22,6 +25,7 @@ interface Props {
 
 export const PositionDetails: React.FC<Props> = ({
   coin,
+  type,
   positionType,
   colateral,
   leverage,
@@ -47,6 +51,11 @@ export const PositionDetails: React.FC<Props> = ({
   const pnlPercentage = calculatePnlPercentage(colateral, value);
   const pnlClass = pnl < 0 ? "text-red" : "text-green";
 
+  const disabled =
+    type === PositionDetailsType.LIQUIDATE
+      ? pnlPercentage > PNL_LIQUIDATION_TRESHOLD
+      : false;
+
   return (
     <div className="w-full">
       <div className="h-[40px] px-4 flex items-center justify-between">
@@ -67,11 +76,12 @@ export const PositionDetails: React.FC<Props> = ({
         <div className="w-[180px]">
           <div className="w-[80px]">
             <Button
-              scheme={Color.BLUE}
+              scheme={disabled ? Color.GRAY : Color.BLUE}
               size={ButtonSize.SMALL}
               onClick={() => onClose()}
+              disabled={disabled}
             >
-              close
+              {type === PositionDetailsType.CLOSE ? "close" : "liquidate"}
             </Button>
           </div>
         </div>

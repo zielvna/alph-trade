@@ -200,6 +200,88 @@ export namespace ALPHTradeTypes {
       params: CallContractParams<{ type: bigint; isOpenPrice: boolean }>;
       result: CallContractResult<bigint>;
     };
+    getAllPositions: {
+      params: CallContractParams<{ offset: bigint }>;
+      result: CallContractResult<
+        [
+          [
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position
+          ],
+          [
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint
+          ],
+          bigint
+        ]
+      >;
+    };
   }
   export type CallMethodParams<T extends keyof CallMethodTable> =
     CallMethodTable[T]["params"];
@@ -287,6 +369,10 @@ export namespace ALPHTradeTypes {
         type: bigint;
         isOpenPrice: boolean;
       }>;
+      result: SignExecuteScriptTxResult;
+    };
+    getAllPositions: {
+      params: SignExecuteContractMethodParams<{ offset: bigint }>;
       result: SignExecuteScriptTxResult;
     };
   }
@@ -631,6 +717,96 @@ class Factory extends ContractFactory<
     > => {
       return testMethod(this, "getPrice", params, getContractByCodeHash);
     },
+    getAllPositions: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { offset: bigint },
+        { positions?: Map<bigint, Position> }
+      >
+    ): Promise<
+      TestContractResult<
+        [
+          [
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position,
+            Position
+          ],
+          [
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint,
+            bigint
+          ],
+          bigint
+        ],
+        { positions?: Map<bigint, Position> }
+      >
+    > => {
+      return testMethod(this, "getAllPositions", params, getContractByCodeHash);
+    },
   };
 }
 
@@ -638,8 +814,8 @@ class Factory extends ContractFactory<
 export const ALPHTrade = new Factory(
   Contract.fromJson(
     ALPHTradeContractJson,
-    "=56-2+5=1-3=2+834=2+5=2-2+66=4652-2+11=40+7a7e0214696e73657274206174206d617020706174683a2000=45-1+9=204+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+a=40+7a7e0214696e73657274206174206d617020706174683a2000=170+7a7e021472656d6f7665206174206d617020706174683a2000=460",
-    "74eed8f5e57154d6f6ab92214bec1542607fb12f9c87afd471767f0672264a4a",
+    "=56-2+5=1-3=2+834=2+5=2-2+66=1-3+116=4652-2+11=40+7a7e0214696e73657274206174206d617020706174683a2000=45-1+9=204+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+a=40+7a7e0214696e73657274206174206d617020706174683a2000=170+7a7e021472656d6f7665206174206d617020706174683a2000=3372",
+    "729feb19265039ec54a2c926ab5890ef3bcffb8e2415264a3302f47e3173f5cf",
     AllStructs
   )
 );
@@ -839,6 +1015,17 @@ export class ALPHTradeInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
+    getAllPositions: async (
+      params: ALPHTradeTypes.CallMethodParams<"getAllPositions">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"getAllPositions">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "getAllPositions",
+        params,
+        getContractByCodeHash
+      );
+    },
   };
 
   transact = {
@@ -921,6 +1108,11 @@ export class ALPHTradeInstance extends ContractInstance {
       params: ALPHTradeTypes.SignExecuteMethodParams<"getPrice">
     ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getPrice">> => {
       return signExecuteMethod(ALPHTrade, this, "getPrice", params);
+    },
+    getAllPositions: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"getAllPositions">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getAllPositions">> => {
+      return signExecuteMethod(ALPHTrade, this, "getAllPositions", params);
     },
   };
 

@@ -17,7 +17,8 @@ import Link from "next/link";
 
 export const Header: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
-  const { setBalance, setCurrentPrice, setLpBalance } = useStore();
+  const { setBalance, setCurrentPrice, setLpBalance, setPositions } =
+    useStore();
   const { connect, disconnect } = useConnect();
   const { account, signer } = useWallet();
 
@@ -43,17 +44,15 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     const updateCurrentPrice = async () => {
-      if (account) {
-        const price = await getBTCPrice();
-        setCurrentPrice(price);
-      }
+      const price = await getBTCPrice();
+      setCurrentPrice(price);
     };
 
     updateCurrentPrice();
     setInterval(() => {
       updateCurrentPrice();
     }, 15000);
-  }, [account, setCurrentPrice]);
+  }, [setCurrentPrice]);
 
   const handleAirdrop = async () => {
     if (signer) {
@@ -76,6 +75,8 @@ export const Header: React.FC = () => {
 
   const handleDisconnect = async () => {
     await disconnect();
+
+    setPositions([]);
 
     setBalance(0n);
   };

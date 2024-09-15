@@ -17,6 +17,7 @@ import { PositionWithIndex } from "./types";
 import {
   ClosePosition,
   Deposit,
+  Liquidate,
   Mint,
   OpenPosition,
   Withdraw,
@@ -140,4 +141,45 @@ export const getOpenInterest = async () => {
     short: state.fields.shortPositionsSize,
     total: state.fields.longPositionsSize + state.fields.shortPositionsSize,
   };
+};
+
+export const getAllPositions = async () => {
+  const [positions, indexes, count] = (
+    await ALPH_TRADE.view.getAllPositions({
+      args: { offset: 0n },
+    })
+  ).returns;
+
+  const parsedPositions = positions
+    .map((position, index) => ({ ...position, index: indexes[index] }))
+    .filter((position) => position.colateral !== 0n);
+
+  for (let i = 35n; i < count; i++) {
+    const [positions, indexes] = (
+      await ALPH_TRADE.view.getAllPositions({
+        args: { offset: i },
+      })
+    ).returns;
+
+    parsedPositions.push(
+      ...positions.map((position, index) => ({
+        ...position,
+        index: indexes[index],
+      }))
+    );
+  }
+
+  return parsedPositions;
+};
+
+export const liquidate = async (
+  positionIndex: bigint,
+  signer: SignerProvider
+) => {
+  return await Liquidate.execute(signer, {
+    initialFields: {
+      alphTrade: ALPH_TRADE_CONTRACT_ID,
+      positionIndex,
+    },
+  });
 };

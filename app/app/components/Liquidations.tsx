@@ -1,79 +1,58 @@
-"use client";
-
 import { useEffect } from "react";
 import { Coin } from "../enums/coin";
+import { PositionDetailsType } from "../enums/position-details-type";
 import { PositionType } from "../enums/position-type";
-import { PositionDetails } from "./PositionDetails";
+import { useStore } from "../store/store";
 import {
   PRICE_DECIMAL,
   TOKEN_DECIMAL,
   USDC_CONTRACT_ID,
 } from "../utils/consts";
 import { formatNumber } from "../utils/ui";
-import { useStore } from "../store/store";
-import { useWallet } from "@alephium/web3-react";
-import { waitForTxConfirmation } from "@alephium/web3";
+import { PositionDetails } from "./PositionDetails";
 import {
   balanceOf,
-  closePosition,
-  getLiquidity,
+  getAllPositions,
   getOpenInterest,
-  getPositions,
+  liquidate,
 } from "../utils/web3";
-import { PositionDetailsType } from "../enums/position-details-type";
+import { useWallet } from "@alephium/web3-react";
+import { waitForTxConfirmation } from "@alephium/web3";
 
-export const Positions: React.FC = () => {
+export const Liquidations: React.FC = () => {
+  const { signer, account } = useWallet();
   const {
     currentPrice,
-    positions,
+    allPositions,
+    setAllPositions,
     setBalance,
-    setPositions,
-    setLiquidity,
     setOpenInterest,
   } = useStore();
-  const { account, signer } = useWallet();
 
   useEffect(() => {
-    const loadPositions = async () => {
-      if (account) {
-        const positions = await getPositions(account.address);
-        setPositions(positions);
-      }
+    const fetchData = async () => {
+      const allPositions = await getAllPositions();
+      setAllPositions(allPositions);
     };
 
-    loadPositions();
-  }, [account, setPositions]);
+    fetchData();
+  }, [setAllPositions]);
 
-  const handleClosePosition = async (positionIndex: bigint) => {
-    if (signer) {
-      const result = await closePosition(positionIndex, signer);
+  const handleLiquidatePosition = async (positionIndex: bigint) => {
+    if (signer && account) {
+      const result = await liquidate(positionIndex, signer);
       await waitForTxConfirmation(result.txId, 1, 1000);
+
+      const allPositions = await getAllPositions();
+      setAllPositions(allPositions);
 
       const balance = await balanceOf(USDC_CONTRACT_ID, account.address);
       setBalance(balance);
-
-      const positions = await getPositions(account.address);
-      setPositions(positions);
-
-      const liquidity = await getLiquidity();
-      setLiquidity(liquidity);
 
       const openInterest = await getOpenInterest();
       setOpenInterest(openInterest);
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const liquidity = await getLiquidity();
-      setLiquidity(liquidity);
-
-      const openInterest = await getOpenInterest();
-      setOpenInterest(openInterest);
-    };
-
-    fetchData();
-  }, [setLiquidity, setOpenInterest]);
 
   return (
     <div className="w-full">
@@ -86,12 +65,12 @@ export const Positions: React.FC = () => {
         <div className="w-[180px]">liquidation price</div>
         <div className="w-[180px]">value</div>
         <div className="w-[180px]">p&l</div>
-        <div className="w-[180px]">close</div>
+        <div className="w-[180px]">liquidate</div>
       </div>
-      {positions.map((position) => (
+      {allPositions.map((position) => (
         <PositionDetails
           coin={Coin.BTC}
-          type={PositionDetailsType.CLOSE}
+          type={PositionDetailsType.LIQUIDATE}
           positionType={
             position.type === 0n ? PositionType.LONG : PositionType.SHORT
           }
@@ -109,7 +88,7 @@ export const Positions: React.FC = () => {
             Number(PRICE_DECIMAL)
           )}
           key={position.entryTimestamp}
-          onClose={() => handleClosePosition(position.index)}
+          onClose={() => handleLiquidatePosition(position.index)}
         />
       ))}
     </div>
