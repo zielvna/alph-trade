@@ -119,8 +119,6 @@ export const SidePanel: React.FC = () => {
     parsedColateral <= balance &&
     Number(colateral) * leverage <= availableLiquidity;
 
-  console.log(Number(colateral), availableLiquidity);
-
   return (
     <div className="w-[360px] flex flex-col gap-4 p-4">
       <div className="flex gap-4">
