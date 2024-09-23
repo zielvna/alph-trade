@@ -1,7 +1,7 @@
 {
   "version": "v3.6.2",
   "name": "Deposit",
-  "bytecodeTemplate": "0101030000000cb40c0d{0}0105{1}a3{1}0d0c{0}0107",
+  "bytecodeTemplate": "0101030000000cb40c0d{0}0105{1}a3{1}0d0c{0}010b",
   "fieldsSig": {
     "names": [
       "alphTrade",

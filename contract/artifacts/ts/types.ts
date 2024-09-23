@@ -11,6 +11,7 @@ export interface OracleValue extends Record<string, Val> {
 }
 export interface Position extends Record<string, Val> {
   owner: Address;
+  market: HexString;
   type: bigint;
   colateral: bigint;
   leverage: bigint;

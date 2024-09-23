@@ -24,11 +24,18 @@ export async function deployToken(
   return Token.at(deployResult.contractInstance.address)
 }
 
-export async function deployOracle(btcPrice: bigint, signer: SignerProvider): Promise<OracleInstance> {
+export async function deployOracle(
+  btcPrice: bigint,
+  ethPrice: bigint,
+  alphPrice: bigint,
+  signer: SignerProvider
+): Promise<OracleInstance> {
   const deployResult = await waitTxConfirmed(
     Oracle.deploy(signer, {
       initialFields: {
-        btcPrice
+        btcPrice,
+        ethPrice,
+        alphPrice
       }
     })
   )
@@ -43,6 +50,7 @@ export async function deployALPHTrade(
   oracleId: string,
   signer: SignerProvider
 ): Promise<ALPHTradeInstance> {
+  const signerAccount = await signer.getSelectedAccount()
   const deployResult = await waitTxConfirmed(
     ALPHTrade.deploy(signer, {
       initialFields: {
@@ -52,6 +60,8 @@ export async function deployALPHTrade(
         supply: MAX_VALUE,
         usdcId,
         oracleId,
+        admin: signerAccount.address,
+        marketsIndex: 0n,
         balance: MAX_VALUE,
         liquidity: 0n,
         longPositionsSize: 0n,

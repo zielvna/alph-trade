@@ -1,21 +1,24 @@
 {
   "version": "v3.6.2",
   "name": "OpenPosition",
-  "bytecodeTemplate": "01010300000011b47a0c0d{0}0105{2}a3d1a2{1}{2}{3}0f0c{0}0109",
+  "bytecodeTemplate": "01010300000012b47a0c0d{0}0105{3}a3d1a2{1}{2}{3}{4}100c{0}010d",
   "fieldsSig": {
     "names": [
       "alphTrade",
+      "market",
       "type",
       "colateral",
       "leverage"
     ],
     "types": [
       "ALPHTrade",
+      "ByteVec",
       "U256",
       "U256",
       "U256"
     ],
     "isMutable": [
+      false,
       false,
       false,
       false,

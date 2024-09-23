@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { Coin } from "../enums/coin";
 import { PositionType } from "../enums/position-type";
 import { PositionDetails } from "./PositionDetails";
 import {
@@ -21,6 +20,8 @@ import {
   getPositions,
 } from "../utils/web3";
 import { PositionDetailsType } from "../enums/position-details-type";
+import { byteVecToMarket } from "../utils/functions";
+import { Market } from "../enums/market";
 
 export const Positions: React.FC = () => {
   const {
@@ -90,7 +91,7 @@ export const Positions: React.FC = () => {
       </div>
       {positions.map((position) => (
         <PositionDetails
-          coin={Coin.BTC}
+          market={byteVecToMarket(position.market) ?? Market.BTC}
           type={PositionDetailsType.CLOSE}
           positionType={
             position.type === 0n ? PositionType.LONG : PositionType.SHORT
@@ -105,7 +106,9 @@ export const Positions: React.FC = () => {
             Number(PRICE_DECIMAL)
           )}
           currentPrice={formatNumber(
-            Number(currentPrice),
+            Number(
+              currentPrice[byteVecToMarket(position.market) ?? Market.BTC]
+            ),
             Number(PRICE_DECIMAL)
           )}
           key={position.entryTimestamp}

@@ -1,8 +1,10 @@
 import { Coin } from "../enums/coin";
 import { Color } from "../enums/color";
+import { Market } from "../enums/market";
 import { PositionDetailsType } from "../enums/position-details-type";
 import { PositionType } from "../enums/position-type";
 import { PNL_LIQUIDATION_TRESHOLD } from "../utils/consts";
+import { marketToCoin } from "../utils/functions";
 import {
   calculateLiquidationPrice,
   calculatePnl,
@@ -13,7 +15,7 @@ import { Button, ButtonSize } from "./Button";
 import { CoinIcon } from "./CoinIcon";
 
 interface Props {
-  coin: Coin;
+  market: Market;
   type: PositionDetailsType;
   positionType: PositionType;
   colateral: number;
@@ -24,7 +26,7 @@ interface Props {
 }
 
 export const PositionDetails: React.FC<Props> = ({
-  coin,
+  market,
   type,
   positionType,
   colateral,
@@ -60,7 +62,8 @@ export const PositionDetails: React.FC<Props> = ({
     <div className="w-full">
       <div className="h-[40px] px-4 flex items-center justify-between">
         <div className={`w-[180px] flex gap-2 ${positionClass}`}>
-          <CoinIcon coin={coin} /> {coin.toUpperCase()} {positionType}
+          <CoinIcon coin={marketToCoin(market) ?? Coin.USDC} />{" "}
+          {marketToCoin(market)?.toUpperCase()} {positionType}
         </div>
         <div className="w-[180px]">${colateral.toFixed(2)}</div>
         <div className="w-[180px]">x{leverage}</div>

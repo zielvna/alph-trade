@@ -7,19 +7,29 @@ Interface IOracle {
     pub fn getValue(key: ByteVec) -> OracleValue
 }
 
-Contract Oracle(mut btcPrice: U256) {
+Contract Oracle(mut btcPrice: U256, mut ethPrice: U256, mut alphPrice: U256) {
     @using(updateFields = true, checkExternalCaller = false)
     pub fn setValue(key: ByteVec, value: U256) -> () {
-        if(key == b`BTC/USDC`) {
+        if(key == b`BTC/USD`) {
             btcPrice = value
+        } else if (key == b`ETH/USD`) {
+            ethPrice = value
+        } else if (key == b`ALPH/USD`) {
+            alphPrice = value
+        } else {
+            return
         }
     }
 
     pub fn getValue(key: ByteVec) -> OracleValue {
-        if(key == b`BTC/USDC`) {
+        if(key == b`BTC/USD`) {
             return OracleValue { value: btcPrice, timestamp: blockTimeStamp!() }
+        } else if (key == b`ETH/USD`) {
+            return OracleValue { value: ethPrice, timestamp: blockTimeStamp!() }
+        } else if (key == b`ALPH/USD`) {
+            return OracleValue { value: alphPrice, timestamp: blockTimeStamp!() }
+        } else {
+            return OracleValue { value: 0, timestamp: 0 }
         }
-
-        return OracleValue { value: 0, timestamp: 0 }
     }
 }

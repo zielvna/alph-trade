@@ -37,6 +37,7 @@ export const SidePanel: React.FC = () => {
     currentPrice,
     liquidity,
     openInterest,
+    market,
     setBalance,
     setPositions,
     setLiquidity,
@@ -47,7 +48,8 @@ export const SidePanel: React.FC = () => {
   const [leverage, setLeverage] = useState(2);
 
   const entryPrice =
-    Number(currentPrice) * (positionType === PositionType.LONG ? 1.005 : 0.995);
+    Number(currentPrice[market]) *
+    (positionType === PositionType.LONG ? 1.005 : 0.995);
   const positionSize = calculatePositionSize(Number(colateral), leverage);
   const liquidationPrice = calculateLiquidationPrice(
     positionType,
@@ -61,6 +63,7 @@ export const SidePanel: React.FC = () => {
         Math.round(Number(colateral) * Number(TOKEN_DENOMINATOR))
       );
       const result = await openPosition(
+        market,
         positionType,
         amount,
         BigInt(leverage),

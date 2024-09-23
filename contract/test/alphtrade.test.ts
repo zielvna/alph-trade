@@ -14,7 +14,7 @@ describe('alph trade tests', () => {
 
   test('deploy works', async () => {
     const USDC = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
-    const oracle = await deployOracle(50000_00000000n, signer)
+    const oracle = await deployOracle(50000_00000000n, 2500_00000000n, 1_50000000n, signer)
     await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, oracle.contractId, signer)
   })
 })

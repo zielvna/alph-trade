@@ -1,7 +1,7 @@
 {
   "version": "v3.6.2",
   "name": "ClosePosition",
-  "bytecodeTemplate": "01010300000005{1}0d0c{0}010a",
+  "bytecodeTemplate": "01010300000005{1}0d0c{0}010e",
   "fieldsSig": {
     "names": [
       "alphTrade",

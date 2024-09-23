@@ -1,5 +1,7 @@
 export enum Coin {
-  BTC = "btc",
-  USDC = "usdc",
-  ATLP = "atlp",
+  BTC = "BTC",
+  ETH = "ETH",
+  ALPH = "ALPH",
+  USDC = "USDC",
+  ATLP = "ATLP",
 }

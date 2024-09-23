@@ -1,5 +1,6 @@
 struct Position {
     mut owner: Address,
+    mut market: ByteVec,
     mut type: U256,
     mut colateral: U256,
     mut leverage: U256,
@@ -14,6 +15,8 @@ Contract ALPHTrade(
     supply: U256,
     usdcId: ByteVec,
     oracleId: IOracle,
+    admin: Address,
+    mut marketsIndex: U256,
     mut balance: U256,
     mut liquidity: U256,
     mut longPositionsSize: U256,
@@ -21,6 +24,7 @@ Contract ALPHTrade(
     mut positionsIndex: U256
 ) implements IFungibleToken {
     mapping[U256, Position] positions
+    mapping[U256, ByteVec] markets
 
     const TOKEN_DENOMINATOR = 10 ** 6
     const PRICE_DENOMINATOR = 10 ** 9
@@ -39,6 +43,8 @@ Contract ALPHTrade(
         NotEnoughLiquidity = 3
         PositionValueAboveLiquidationThreshold = 4
         NotEnoughColateral = 5
+        NotAnAdmin = 6
+        MarketDoesNotExist = 7
     }
 
     enum PositionType {
@@ -74,6 +80,58 @@ Contract ALPHTrade(
         return selfTokenId!()
     }
 
+    @using(preapprovedAssets = true, checkExternalCaller = true, updateFields = true)
+    pub fn addMarket(ticker: ByteVec) -> () {
+        let caller = callerAddress!()
+        checkCaller!(caller == admin, Error.NotAnAdmin)
+        markets.insert!(caller, marketsIndex, ticker)
+        marketsIndex = marketsIndex + 1
+    }
+
+    @using(checkExternalCaller = true, assetsInContract = enforced, updateFields = true)
+    pub fn removeMarket(ticker: ByteVec) -> () {
+        let caller = callerAddress!()
+        checkCaller!(caller == admin, Error.NotAnAdmin)
+        
+        for (let mut i = 0; i < marketsIndex; i = i + 1) {
+            if(markets.contains!(i) && ticker == markets[i]) {
+                let lastMarketsIndex = marketsIndex - 1
+
+                markets.remove!(caller, i)
+                if(i != lastMarketsIndex) {
+                    positions.insert!(caller, i, positions[lastMarketsIndex])
+                    positions.remove!(caller, lastMarketsIndex)
+                }
+                marketsIndex = marketsIndex - 1
+                return
+            }
+        }
+
+        assert!(false, Error.MarketDoesNotExist)
+    }
+
+    pub fn getMarkets() -> [ByteVec; 254] {
+        let mut marketList = [#; 254]
+
+        for(let mut i = 0; i < marketsIndex; i = i + 1) {
+            if(markets.contains!(i)) {
+                marketList[i] = markets[i]
+            }
+        }
+
+        return marketList
+    }
+
+    fn containsMarket(ticker: ByteVec) -> Bool {
+        for (let mut i = 0; i < marketsIndex; i = i + 1) {
+            if(markets.contains!(i) && ticker == markets[i]) {
+                return true
+            }
+        }
+
+        return false
+    }
+
     @using(assetsInContract = true, preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
     pub fn deposit(usdcAmount: U256) -> () {
         if(liquidity == 0) {
@@ -105,9 +163,10 @@ Contract ALPHTrade(
     }
 
     @using(preapprovedAssets = true, checkExternalCaller = false, payToContractOnly = true, updateFields = true)
-    pub fn openPosition(type: U256, colateral: U256, leverage: U256) -> () {
+    pub fn openPosition(market: ByteVec, type: U256, colateral: U256, leverage: U256) -> () {
         let caller = callerAddress!()
         let entryTimestamp = blockTimeStamp!()
+        assert!(containsMarket(market), Error.MarketDoesNotExist)
         assert!(colateral >= MIN_COLATERAL, Error.NotEnoughColateral)
         assert!(type == PositionType.Long || type == PositionType.Short, Error.InvalidPositionType)
         assert!(leverage >= MIN_LEVERAGE && leverage <= MAX_LEVERAGE, Error.InvalidLeverage)
@@ -118,8 +177,8 @@ Contract ALPHTrade(
             assert!(shortPositionsSize + positionSize <= liquidity / 2, Error.NotEnoughLiquidity)
         }
 
-        let entryPrice = getPrice(type, true)
-        addPosition{caller -> ALPH: mapEntryDeposit!()}(caller, Position { owner: caller, type, colateral, leverage, entryPrice, entryTimestamp })
+        let entryPrice = getPrice(market, type, true)
+        addPosition{caller -> ALPH: mapEntryDeposit!()}(caller, Position { owner: caller, market, type, colateral, leverage, entryPrice, entryTimestamp })
         positionsIndex = positionsIndex + 1
         if (type == PositionType.Long) {
             longPositionsSize = longPositionsSize + positionSize
@@ -175,9 +234,9 @@ Contract ALPHTrade(
         return positions[positionIndex]
     }
 
-    pub fn getPositions(address: Address) -> ([Position; 35], [U256; 35]) {
-        let mut userPositions = [Position { owner: nullContractAddress!(), type: 0, colateral: 0, leverage: 0, entryPrice: 0, entryTimestamp: 0 }; 35]
-        let mut indexes = [0; 35]
+    pub fn getPositions(address: Address) -> ([Position; 31], [U256; 31]) {
+        let mut userPositions = [Position { owner: nullContractAddress!(), market: #, type: 0, colateral: 0, leverage: 0, entryPrice: 0, entryTimestamp: 0 }; 31]
+        let mut indexes = [0; 31]
         let mut i = 0
 
         for (let mut j = 0; j < positionsIndex; j = j + 1) {
@@ -218,7 +277,7 @@ Contract ALPHTrade(
         let hourlyBorrowCost = toI256!(position.colateral) * toI256!(position.leverage) * 5i / 100000i
         let valueAfterFees = toI256!(position.colateral) - hourlyBorrowCost * toI256!(hoursPassed)
 
-        let closePrice = getPrice(position.type, false)
+        let closePrice = getPrice(position.market, position.type, false)
 
         let positionSize = toI256!(position.colateral * position.leverage)
         let priceDenominator = toI256!(PRICE_DENOMINATOR)
@@ -230,18 +289,18 @@ Contract ALPHTrade(
     }
 
     @using(checkExternalCaller = false)
-    pub fn getPrice(type: U256, isOpenPrice: Bool) -> U256 {
-        let btcPrice = oracleId.getValue(b`BTC/USDC`).value
+    pub fn getPrice(market: ByteVec, type: U256, isOpenPrice: Bool) -> U256 {
+        let price = oracleId.getValue(market).value
         if ((type == PositionType.Long && isOpenPrice) || (type == PositionType.Short && !isOpenPrice)) {
-            return btcPrice * 1005 / 1000
+            return price * 1005 / 1000
         } else {
-            return btcPrice * 995 / 1000
+            return price * 995 / 1000
         }
     }
 
-    pub fn getAllPositions(offset: U256) -> ([Position; 35], [U256; 35], U256) {
-        let mut userPositions = [Position { owner: nullContractAddress!(), type: 0, colateral: 0, leverage: 0, entryPrice: 0, entryTimestamp: 0 }; 35]
-        let mut indexes = [0; 35]
+    pub fn getAllPositions(offset: U256) -> ([Position; 31], [U256; 31], U256) {
+        let mut userPositions = [Position { owner: nullContractAddress!(), market: #, type: 0, colateral: 0, leverage: 0, entryPrice: 0, entryTimestamp: 0 }; 31]
+        let mut indexes = [0; 31]
         let mut i = 0
 
         for (let mut j = offset; j < positionsIndex; j = j + 1) {

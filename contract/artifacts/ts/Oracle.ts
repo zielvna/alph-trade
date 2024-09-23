@@ -39,6 +39,8 @@ import { OracleValue, Position, AllStructs } from "./types";
 export namespace OracleTypes {
   export type Fields = {
     btcPrice: bigint;
+    ethPrice: bigint;
+    alphPrice: bigint;
   };
 
   export type State = ContractState<Fields>;
@@ -126,7 +128,7 @@ export const Oracle = new Factory(
   Contract.fromJson(
     OracleContractJson,
     "",
-    "6ebf0205753b8d0204af27ef12c9d4f66cfd92aa84b0b753035382478ca723d3",
+    "c39a68c97214dda87e93536d3d5f1b991a504ae68f0f168e70ec1ccbddff6a98",
     AllStructs
   )
 );

@@ -2,11 +2,10 @@ import { PrivateKeyWallet } from '@alephium/web3-wallet'
 import { balanceOf, deployALPHTrade, deployOracle, deployToken } from '../src/utils'
 import { ONE_ALPH, web3 } from '@alephium/web3'
 import { getSigner } from '@alephium/web3-test'
-import { getValue, setValue } from '../src/oracleUtils'
-import { closePosition, deposit, openPosition, withdraw } from '../src/alphTradeUtils'
+import { setValue } from '../src/oracleUtils'
+import { addMarket, closePosition, deposit, openPosition, withdraw } from '../src/alphTradeUtils'
 import { mint } from '../src/tokenUtils'
 import { MAX_VALUE, ONE_TOKEN } from '../src/consts'
-import { Withdraw } from '../artifacts/ts'
 
 let signer: PrivateKeyWallet
 
@@ -18,7 +17,7 @@ describe('liquidity tests', () => {
 
   test('deposit works', async () => {
     const USDC = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
-    const oracle = await deployOracle(50000_00000000n, signer)
+    const oracle = await deployOracle(50000_00000000n, 2500_00000000n, 1_50000000n, signer)
     const alphTrade = await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, oracle.contractId, signer)
 
     await mint(USDC, ONE_TOKEN, signer)
@@ -54,7 +53,7 @@ describe('liquidity tests', () => {
 
   test('withdraw works', async () => {
     const USDC = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
-    const oracle = await deployOracle(50000_00000000n, signer)
+    const oracle = await deployOracle(50000_00000000n, 2500_00000000n, 1_50000000n, signer)
     const alphTrade = await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, oracle.contractId, signer)
 
     await mint(USDC, ONE_TOKEN, signer)
@@ -92,13 +91,14 @@ describe('liquidity tests', () => {
 
   test('withdraw after liquidity increased', async () => {
     const USDC = await deployToken('USDC', 'USD Coin', 6n, ONE_TOKEN * 100n, signer)
-    const oracle = await deployOracle(50000_00000000n, signer)
+    const oracle = await deployOracle(50000_00000000n, 2500_00000000n, 1_50000000n, signer)
     const alphTrade = await deployALPHTrade('ATLP', 'alph trade lp', 6n, USDC.contractId, oracle.contractId, signer)
 
     await mint(USDC, ONE_TOKEN * 5n, signer)
     await deposit(alphTrade, ONE_TOKEN * 4n, signer)
-    await openPosition(alphTrade, 0n, ONE_TOKEN, 2n, signer)
-    await setValue(oracle, 'BTC/USDC', 60000_00000000n, signer)
+    await addMarket(alphTrade, 'BTC/USD', signer)
+    await openPosition(alphTrade, 'BTC/USD', 0n, ONE_TOKEN, 2n, signer)
+    await setValue(oracle, 'BTC/USD', 60000_00000000n, signer)
     await closePosition(alphTrade, 0n, signer)
 
     await withdraw(alphTrade, ONE_TOKEN * 2n, signer)

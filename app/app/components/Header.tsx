@@ -10,14 +10,15 @@ import {
   TOKEN_DENOMINATOR,
   USDC_CONTRACT_ID,
 } from "../utils/consts";
-import { balanceOf, getBTCPrice, mint } from "../utils/web3";
+import { balanceOf, getPrice, mint } from "../utils/web3";
 import { useStore } from "../store/store";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Market } from "../enums/market";
 
 export const Header: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
-  const { setBalance, setCurrentPrice, setLpBalance, setPositions } =
+  const { market, setBalance, setLpBalance, setPositions, setCurrentPrice } =
     useStore();
   const { connect, disconnect } = useConnect();
   const { account, signer } = useWallet();
@@ -44,15 +45,24 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     const updateCurrentPrice = async () => {
-      const price = await getBTCPrice();
-      setCurrentPrice(price);
+      const [btcPrice, ethPrice, alphPrice] = await Promise.all([
+        getPrice(Market.BTC),
+        getPrice(Market.ETH),
+        getPrice(Market.ALPH),
+      ]);
+
+      setCurrentPrice(Market.BTC, btcPrice);
+      setCurrentPrice(Market.ETH, ethPrice);
+      setCurrentPrice(Market.ALPH, alphPrice);
     };
 
     updateCurrentPrice();
-    setInterval(() => {
+    const interval = setInterval(() => {
       updateCurrentPrice();
-    }, 15000);
-  }, [setCurrentPrice]);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [market, setCurrentPrice]);
 
   const handleAirdrop = async () => {
     if (signer) {

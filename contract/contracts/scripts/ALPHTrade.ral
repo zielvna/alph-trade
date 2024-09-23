@@ -1,3 +1,11 @@
+TxScript AddMarket(alphTrade: ALPHTrade, ticker: ByteVec) {
+    alphTrade.addMarket{callerAddress!() -> ALPH: mapEntryDeposit!()}(ticker)
+}
+
+TxScript RemoveMarket(alphTrade: ALPHTrade, ticker: ByteVec) {
+    alphTrade.removeMarket(ticker)
+}
+
 TxScript Deposit(alphTrade: ALPHTrade, amount: U256) {
     alphTrade.deposit{callerAddress!() -> alphTrade.getUsdcId(): amount}(amount)
 }
@@ -6,8 +14,8 @@ TxScript Withdraw(alphTrade: ALPHTrade, amount: U256) {
     alphTrade.withdraw{callerAddress!() -> alphTrade.getLpId(): amount}(amount)
 }
 
-TxScript OpenPosition(alphTrade: ALPHTrade, type: U256, colateral: U256, leverage: U256) {
-    alphTrade.openPosition{callerAddress!() -> alphTrade.getUsdcId(): colateral, ALPH: mapEntryDeposit!()}(type, colateral, leverage)
+TxScript OpenPosition(alphTrade: ALPHTrade, market: ByteVec, type: U256, colateral: U256, leverage: U256) {
+    alphTrade.openPosition{callerAddress!() -> alphTrade.getUsdcId(): colateral, ALPH: mapEntryDeposit!()}(market, type, colateral, leverage)
 }
 
 TxScript ClosePosition(alphTrade: ALPHTrade, positionIndex: U256) {

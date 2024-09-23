@@ -4,26 +4,33 @@ import { Coin } from "../enums/coin";
 import { useStore } from "../store/store";
 import { formatNumber } from "../utils/ui";
 import { Color } from "../enums/color";
-import { PRICE_DECIMAL } from "../utils/consts";
+import {
+  MARKETS,
+  ORACLE_API_URL,
+  PRICE_DECIMAL,
+  TRADING_VIEW_TICKER,
+} from "../utils/consts";
+import { marketToCoin } from "../utils/functions";
 
 const Chart: React.FC = () => {
   const [lastPrice, setLastPrice] = useState(0n);
   const [priceClass, setPriceClass] = useState(Color.BLACK);
-  const { currentPrice } = useStore();
+  const [change, setChange] = useState(0);
+  const { currentPrice, market, setMarket } = useStore();
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (currentPrice > lastPrice) {
+    if (currentPrice[market] > lastPrice) {
       setPriceClass(Color.GREEN);
-    } else if (currentPrice < lastPrice) {
+    } else if (currentPrice[market] < lastPrice) {
       setPriceClass(Color.RED);
     }
-    setLastPrice(currentPrice);
+    setLastPrice(currentPrice[market]);
 
     setTimeout(() => {
       setPriceClass(Color.BLACK);
     }, 1000);
-  }, [lastPrice, currentPrice]);
+  }, [lastPrice, currentPrice, market]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -34,13 +41,13 @@ const Chart: React.FC = () => {
     script.innerHTML = `
         {
           "autosize": true,
-          "symbol": "BINANCE:BTCUSDC",
+          "symbol": "${TRADING_VIEW_TICKER[market]}",
           "interval": "1",
           "timezone": "Etc/UTC",
-          "theme": "dark",
+          "theme": "light",
           "style": "1",
           "locale": "en",
-          "allow_symbol_change": true,
+          "allow_symbol_change": false,
           "calendar": false,
           "support_host": "https://www.tradingview.com"
         }`;
@@ -55,21 +62,53 @@ const Chart: React.FC = () => {
         }
       });
     }
-  }, []);
+  }, [market]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(ORACLE_API_URL[market]);
+      const data = await response.json();
+      setChange(data.Price / data.PriceYesterday);
+    };
+
+    fetchData();
+  }, [market]);
+
+  const parsedChange = change * 100 - 100;
 
   return (
     <div className="flex flex-col gap-2 grow ml-4">
-      <div className="flex items-center gap-2">
-        <CoinIcon coin={Coin.BTC} />
-        <p className="text-xl">
-          BTC/USDC:{" "}
-          <span className={`text-${priceClass}`}>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex gap-2">
+          {MARKETS.map((currentMarket, index) => (
+            <div
+              key={index}
+              className={`h-[32px] flex items-center gap-1 text-xl py-1 px-2 cursor-pointer border ${
+                currentMarket === market ? "border-black" : "border-white"
+              }`}
+              onClick={() => setMarket(currentMarket)}
+            >
+              <CoinIcon coin={marketToCoin(currentMarket) ?? Coin.USDC} />
+              {marketToCoin(currentMarket)}
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center gap-4">
+          <p className={`text-xl text-${priceClass}`}>
             $
-            {formatNumber(Number(currentPrice), Number(PRICE_DECIMAL)).toFixed(
-              2
-            )}
-          </span>
-        </p>
+            {formatNumber(
+              Number(currentPrice[market]),
+              Number(PRICE_DECIMAL)
+            ).toFixed(2)}
+          </p>
+          <div className="flex flex-col items-center text-sm leading-4">
+            <p>24h change</p>
+            <p className={`${parsedChange >= 0 ? "text-green" : "text-red"}`}>
+              {parsedChange >= 0 ? "+" : ""}
+              {parsedChange.toFixed(2)}%
+            </p>
+          </div>
+        </div>
       </div>
       <div className="tradingview-widget-container" ref={container}>
         <div className="tradingview-widget-container__widget"></div>

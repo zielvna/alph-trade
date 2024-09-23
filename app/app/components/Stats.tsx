@@ -10,6 +10,8 @@ import {
 import { ProgressBar } from "./ProgressBar";
 import { useStore } from "../store/store";
 import { PositionType } from "../enums/position-type";
+import { byteVecToMarket } from "../utils/functions";
+import { Market } from "../enums/market";
 
 export const Stats: React.FC = () => {
   const {
@@ -49,7 +51,10 @@ export const Stats: React.FC = () => {
       calculateValue(
         position.type === 0n ? PositionType.LONG : PositionType.SHORT,
         formatNumber(Number(position.entryPrice), Number(PRICE_DECIMAL)),
-        formatNumber(Number(currentPrice), Number(PRICE_DECIMAL)),
+        formatNumber(
+          Number(currentPrice[byteVecToMarket(position.market) ?? Market.BTC]),
+          Number(PRICE_DECIMAL)
+        ),
         formatNumber(Number(position.colateral), Number(TOKEN_DECIMAL)),
         Number(position.leverage)
       ),

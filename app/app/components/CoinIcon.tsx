@@ -2,6 +2,8 @@ import Image from "next/image";
 import { Coin } from "../enums/coin";
 import USDCIcon from "../images/usdc.png";
 import BitcoinIcon from "../images/bitcoin.png";
+import EthereumIcon from "../images/ethereum.png";
+import AlephiumIcon from "../images/alephium.png";
 import ATLPIcon from "../images/atlp.png";
 
 interface Props {
@@ -16,6 +18,14 @@ export const CoinIcon: React.FC<Props> = ({ coin }) => {
     case Coin.BTC:
       icon = BitcoinIcon;
       alt = "Bitcoin icon";
+      break;
+    case Coin.ETH:
+      icon = EthereumIcon;
+      alt = "Ethereum icon";
+      break;
+    case Coin.ALPH:
+      icon = AlephiumIcon;
+      alt = "Alephium icon";
       break;
     case Coin.USDC:
       icon = USDCIcon;

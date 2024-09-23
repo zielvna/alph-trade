@@ -45,6 +45,8 @@ export namespace ALPHTradeTypes {
     supply: bigint;
     usdcId: HexString;
     oracleId: HexString;
+    admin: Address;
+    marketsIndex: bigint;
     balance: bigint;
     liquidity: bigint;
     longPositionsSize: bigint;
@@ -83,6 +85,275 @@ export namespace ALPHTradeTypes {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<HexString>;
     };
+    addMarket: {
+      params: CallContractParams<{ ticker: HexString }>;
+      result: CallContractResult<null>;
+    };
+    removeMarket: {
+      params: CallContractParams<{ ticker: HexString }>;
+      result: CallContractResult<null>;
+    };
+    getMarkets: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<
+        [
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString
+        ]
+      >;
+    };
     deposit: {
       params: CallContractParams<{ usdcAmount: bigint }>;
       result: CallContractResult<null>;
@@ -93,6 +364,7 @@ export namespace ALPHTradeTypes {
     };
     openPosition: {
       params: CallContractParams<{
+        market: HexString;
         type: bigint;
         colateral: bigint;
         leverage: bigint;
@@ -146,17 +418,9 @@ export namespace ALPHTradeTypes {
             Position,
             Position,
             Position,
-            Position,
-            Position,
-            Position,
-            Position,
             Position
           ],
           [
-            bigint,
-            bigint,
-            bigint,
-            bigint,
             bigint,
             bigint,
             bigint,
@@ -197,7 +461,11 @@ export namespace ALPHTradeTypes {
       result: CallContractResult<bigint>;
     };
     getPrice: {
-      params: CallContractParams<{ type: bigint; isOpenPrice: boolean }>;
+      params: CallContractParams<{
+        market: HexString;
+        type: bigint;
+        isOpenPrice: boolean;
+      }>;
       result: CallContractResult<bigint>;
     };
     getAllPositions: {
@@ -235,17 +503,9 @@ export namespace ALPHTradeTypes {
             Position,
             Position,
             Position,
-            Position,
-            Position,
-            Position,
-            Position,
             Position
           ],
           [
-            bigint,
-            bigint,
-            bigint,
-            bigint,
             bigint,
             bigint,
             bigint,
@@ -328,6 +588,18 @@ export namespace ALPHTradeTypes {
       params: Omit<SignExecuteContractMethodParams<{}>, "args">;
       result: SignExecuteScriptTxResult;
     };
+    addMarket: {
+      params: SignExecuteContractMethodParams<{ ticker: HexString }>;
+      result: SignExecuteScriptTxResult;
+    };
+    removeMarket: {
+      params: SignExecuteContractMethodParams<{ ticker: HexString }>;
+      result: SignExecuteScriptTxResult;
+    };
+    getMarkets: {
+      params: Omit<SignExecuteContractMethodParams<{}>, "args">;
+      result: SignExecuteScriptTxResult;
+    };
     deposit: {
       params: SignExecuteContractMethodParams<{ usdcAmount: bigint }>;
       result: SignExecuteScriptTxResult;
@@ -338,6 +610,7 @@ export namespace ALPHTradeTypes {
     };
     openPosition: {
       params: SignExecuteContractMethodParams<{
+        market: HexString;
         type: bigint;
         colateral: bigint;
         leverage: bigint;
@@ -366,6 +639,7 @@ export namespace ALPHTradeTypes {
     };
     getPrice: {
       params: SignExecuteContractMethodParams<{
+        market: HexString;
         type: bigint;
         isOpenPrice: boolean;
       }>;
@@ -411,6 +685,8 @@ class Factory extends ContractFactory<
       NotEnoughLiquidity: BigInt("3"),
       PositionValueAboveLiquidationThreshold: BigInt("4"),
       NotEnoughColateral: BigInt("5"),
+      NotAnAdmin: BigInt("6"),
+      MarketDoesNotExist: BigInt("7"),
     },
     PositionType: { Long: BigInt("0"), Short: BigInt("1") },
   };
@@ -425,12 +701,18 @@ class Factory extends ContractFactory<
         TestContractParams<
           ALPHTradeTypes.Fields,
           never,
-          { positions?: Map<bigint, Position> }
+          {
+            positions?: Map<bigint, Position>;
+            markets?: Map<bigint, HexString>;
+          }
         >,
         "testArgs"
       >
     ): Promise<
-      TestContractResult<HexString, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        HexString,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "getSymbol", params, getContractByCodeHash);
     },
@@ -439,12 +721,18 @@ class Factory extends ContractFactory<
         TestContractParams<
           ALPHTradeTypes.Fields,
           never,
-          { positions?: Map<bigint, Position> }
+          {
+            positions?: Map<bigint, Position>;
+            markets?: Map<bigint, HexString>;
+          }
         >,
         "testArgs"
       >
     ): Promise<
-      TestContractResult<HexString, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        HexString,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "getName", params, getContractByCodeHash);
     },
@@ -453,12 +741,18 @@ class Factory extends ContractFactory<
         TestContractParams<
           ALPHTradeTypes.Fields,
           never,
-          { positions?: Map<bigint, Position> }
+          {
+            positions?: Map<bigint, Position>;
+            markets?: Map<bigint, HexString>;
+          }
         >,
         "testArgs"
       >
     ): Promise<
-      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        bigint,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "getDecimals", params, getContractByCodeHash);
     },
@@ -467,12 +761,18 @@ class Factory extends ContractFactory<
         TestContractParams<
           ALPHTradeTypes.Fields,
           never,
-          { positions?: Map<bigint, Position> }
+          {
+            positions?: Map<bigint, Position>;
+            markets?: Map<bigint, HexString>;
+          }
         >,
         "testArgs"
       >
     ): Promise<
-      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        bigint,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "getTotalSupply", params, getContractByCodeHash);
     },
@@ -481,12 +781,18 @@ class Factory extends ContractFactory<
         TestContractParams<
           ALPHTradeTypes.Fields,
           never,
-          { positions?: Map<bigint, Position> }
+          {
+            positions?: Map<bigint, Position>;
+            markets?: Map<bigint, HexString>;
+          }
         >,
         "testArgs"
       >
     ): Promise<
-      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        bigint,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "balance", params, getContractByCodeHash);
     },
@@ -495,12 +801,18 @@ class Factory extends ContractFactory<
         TestContractParams<
           ALPHTradeTypes.Fields,
           never,
-          { positions?: Map<bigint, Position> }
+          {
+            positions?: Map<bigint, Position>;
+            markets?: Map<bigint, HexString>;
+          }
         >,
         "testArgs"
       >
     ): Promise<
-      TestContractResult<HexString, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        HexString,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "getUsdcId", params, getContractByCodeHash);
     },
@@ -509,23 +821,349 @@ class Factory extends ContractFactory<
         TestContractParams<
           ALPHTradeTypes.Fields,
           never,
-          { positions?: Map<bigint, Position> }
+          {
+            positions?: Map<bigint, Position>;
+            markets?: Map<bigint, HexString>;
+          }
         >,
         "testArgs"
       >
     ): Promise<
-      TestContractResult<HexString, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        HexString,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "getLpId", params, getContractByCodeHash);
+    },
+    addMarket: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { ticker: HexString },
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
+    ): Promise<
+      TestContractResult<
+        null,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
+    > => {
+      return testMethod(this, "addMarket", params, getContractByCodeHash);
+    },
+    removeMarket: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { ticker: HexString },
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
+    ): Promise<
+      TestContractResult<
+        null,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
+    > => {
+      return testMethod(this, "removeMarket", params, getContractByCodeHash);
+    },
+    getMarkets: async (
+      params: Omit<
+        TestContractParams<
+          ALPHTradeTypes.Fields,
+          never,
+          {
+            positions?: Map<bigint, Position>;
+            markets?: Map<bigint, HexString>;
+          }
+        >,
+        "testArgs"
+      >
+    ): Promise<
+      TestContractResult<
+        [
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString,
+          HexString
+        ],
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
+    > => {
+      return testMethod(this, "getMarkets", params, getContractByCodeHash);
+    },
+    containsMarket: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { ticker: HexString },
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
+    ): Promise<
+      TestContractResult<
+        boolean,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
+    > => {
+      return testMethod(this, "containsMarket", params, getContractByCodeHash);
     },
     deposit: async (
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { usdcAmount: bigint },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<null, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        null,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "deposit", params, getContractByCodeHash);
     },
@@ -533,21 +1171,32 @@ class Factory extends ContractFactory<
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { lpAmount: bigint },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<null, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        null,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "withdraw", params, getContractByCodeHash);
     },
     openPosition: async (
       params: TestContractParams<
         ALPHTradeTypes.Fields,
-        { type: bigint; colateral: bigint; leverage: bigint },
-        { positions?: Map<bigint, Position> }
+        {
+          market: HexString;
+          type: bigint;
+          colateral: bigint;
+          leverage: bigint;
+        },
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<null, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        null,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "openPosition", params, getContractByCodeHash);
     },
@@ -555,10 +1204,13 @@ class Factory extends ContractFactory<
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { positionIndex: bigint },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<null, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        null,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "closePosition", params, getContractByCodeHash);
     },
@@ -566,10 +1218,13 @@ class Factory extends ContractFactory<
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { positionIndex: bigint },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<null, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        null,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "liquidate", params, getContractByCodeHash);
     },
@@ -577,10 +1232,13 @@ class Factory extends ContractFactory<
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { positionIndex: bigint },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<Position, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        Position,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "getPosition", params, getContractByCodeHash);
     },
@@ -588,7 +1246,7 @@ class Factory extends ContractFactory<
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { address: Address },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
       TestContractResult<
@@ -624,17 +1282,9 @@ class Factory extends ContractFactory<
             Position,
             Position,
             Position,
-            Position,
-            Position,
-            Position,
-            Position,
             Position
           ],
           [
-            bigint,
-            bigint,
-            bigint,
-            bigint,
             bigint,
             bigint,
             bigint,
@@ -668,7 +1318,7 @@ class Factory extends ContractFactory<
             bigint
           ]
         ],
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     > => {
       return testMethod(this, "getPositions", params, getContractByCodeHash);
@@ -677,10 +1327,13 @@ class Factory extends ContractFactory<
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { caller: Address; position: Position },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<null, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        null,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "addPosition", params, getContractByCodeHash);
     },
@@ -688,10 +1341,13 @@ class Factory extends ContractFactory<
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { positionIndex: bigint },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<null, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        null,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "removePosition", params, getContractByCodeHash);
     },
@@ -699,21 +1355,27 @@ class Factory extends ContractFactory<
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { position: Position },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        bigint,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "calculateValue", params, getContractByCodeHash);
     },
     getPrice: async (
       params: TestContractParams<
         ALPHTradeTypes.Fields,
-        { type: bigint; isOpenPrice: boolean },
-        { positions?: Map<bigint, Position> }
+        { market: HexString; type: bigint; isOpenPrice: boolean },
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
-      TestContractResult<bigint, { positions?: Map<bigint, Position> }>
+      TestContractResult<
+        bigint,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
     > => {
       return testMethod(this, "getPrice", params, getContractByCodeHash);
     },
@@ -721,7 +1383,7 @@ class Factory extends ContractFactory<
       params: TestContractParams<
         ALPHTradeTypes.Fields,
         { offset: bigint },
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     ): Promise<
       TestContractResult<
@@ -757,17 +1419,9 @@ class Factory extends ContractFactory<
             Position,
             Position,
             Position,
-            Position,
-            Position,
-            Position,
-            Position,
             Position
           ],
           [
-            bigint,
-            bigint,
-            bigint,
-            bigint,
             bigint,
             bigint,
             bigint,
@@ -802,7 +1456,7 @@ class Factory extends ContractFactory<
           ],
           bigint
         ],
-        { positions?: Map<bigint, Position> }
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
       >
     > => {
       return testMethod(this, "getAllPositions", params, getContractByCodeHash);
@@ -814,8 +1468,8 @@ class Factory extends ContractFactory<
 export const ALPHTrade = new Factory(
   Contract.fromJson(
     ALPHTradeContractJson,
-    "=56-2+5=1-3=2+834=2+5=2-2+66=1-3+116=4652-2+11=40+7a7e0214696e73657274206174206d617020706174683a2000=45-1+9=204+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+a=40+7a7e0214696e73657274206174206d617020706174683a2000=170+7a7e021472656d6f7665206174206d617020706174683a2000=3372",
-    "729feb19265039ec54a2c926ab5890ef3bcffb8e2415264a3302f47e3173f5cf",
+    "=28-9=1+c=1-1=1+e5=1+82d=3-1+8=2-2+d5=2-2+25=1-2=1+c8=2-2+7d=2-4+4d=1-1+ba0=2-1+ad=1-1+1f=1-2=1-3+333=2+c75=1-1+10=1-3+a06=165-1+8=72+7a7e0214696e73657274206174206d617020706174683a2000=36-2+80=53-1+f=93-1+7=52+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+f=40+7a7e0214696e73657274206174206d617020706174683a2000=186+7a7e021472656d6f7665206174206d617020706174683a2000=36-2+8d=8099-1+2=40+7a7e0214696e73657274206174206d617020706174683a2000=48-2+84=224+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+f=40+7a7e0214696e73657274206174206d617020706174683a2000=186+7a7e021472656d6f7665206174206d617020706174683a2000=3500",
+    "ac5526240401e239653ba3ac3107842ee2879a14de7770d9300a7ed9dfa0abd3",
     AllStructs
   )
 );
@@ -831,6 +1485,11 @@ export class ALPHTradeInstance extends ContractInstance {
       ALPHTrade.contract,
       this.contractId,
       "positions"
+    ),
+    markets: new RalphMap<bigint, HexString>(
+      ALPHTrade.contract,
+      this.contractId,
+      "markets"
     ),
   };
 
@@ -912,6 +1571,39 @@ export class ALPHTradeInstance extends ContractInstance {
         ALPHTrade,
         this,
         "getLpId",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
+    addMarket: async (
+      params: ALPHTradeTypes.CallMethodParams<"addMarket">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"addMarket">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "addMarket",
+        params,
+        getContractByCodeHash
+      );
+    },
+    removeMarket: async (
+      params: ALPHTradeTypes.CallMethodParams<"removeMarket">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"removeMarket">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "removeMarket",
+        params,
+        getContractByCodeHash
+      );
+    },
+    getMarkets: async (
+      params?: ALPHTradeTypes.CallMethodParams<"getMarkets">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"getMarkets">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "getMarkets",
         params === undefined ? {} : params,
         getContractByCodeHash
       );
@@ -1063,6 +1755,21 @@ export class ALPHTradeInstance extends ContractInstance {
       params: ALPHTradeTypes.SignExecuteMethodParams<"getLpId">
     ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getLpId">> => {
       return signExecuteMethod(ALPHTrade, this, "getLpId", params);
+    },
+    addMarket: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"addMarket">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"addMarket">> => {
+      return signExecuteMethod(ALPHTrade, this, "addMarket", params);
+    },
+    removeMarket: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"removeMarket">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"removeMarket">> => {
+      return signExecuteMethod(ALPHTrade, this, "removeMarket", params);
+    },
+    getMarkets: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"getMarkets">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getMarkets">> => {
+      return signExecuteMethod(ALPHTrade, this, "getMarkets", params);
     },
     deposit: async (
       params: ALPHTradeTypes.SignExecuteMethodParams<"deposit">

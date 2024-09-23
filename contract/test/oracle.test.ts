@@ -13,16 +13,16 @@ describe('oracle tests', () => {
   })
 
   test('deploy works', async () => {
-    await deployOracle(60_00000000n, signer)
+    await deployOracle(50000_00000000n, 2500_00000000n, 1_50000000n, signer)
   })
 
   test('withdraw works', async () => {
-    const oracle = await deployOracle(60_00000000n, signer)
+    const oracle = await deployOracle(50000_00000000n, 2500_00000000n, 1_50000000n, signer)
 
-    const value = await getValue(oracle, 'BTC/USDC')
-    expect(value.value).toBe(60_00000000n)
-    await setValue(oracle, 'BTC/USDC', 70_00000000n, signer)
-    const newValue = await getValue(oracle, 'BTC/USDC')
-    expect(newValue.value).toBe(70_00000000n)
+    const value = await getValue(oracle, 'BTC/USD')
+    expect(value.value).toBe(50000_00000000n)
+    await setValue(oracle, 'BTC/USD', 60000_00000000n, signer)
+    const newValue = await getValue(oracle, 'BTC/USD')
+    expect(newValue.value).toBe(60000_00000000n)
   })
 })

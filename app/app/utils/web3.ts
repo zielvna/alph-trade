@@ -23,6 +23,7 @@ import {
   Withdraw,
 } from "../artifacts/ts";
 import { PositionType } from "../enums/position-type";
+import { Market } from "../enums/market";
 
 export const balanceOf = async (
   tokenId: string,
@@ -80,6 +81,7 @@ export const closePosition = async (
 };
 
 export const openPosition = async (
+  market: Market,
   positionType: PositionType,
   colateral: bigint,
   leverage: bigint,
@@ -88,6 +90,7 @@ export const openPosition = async (
   return await OpenPosition.execute(signer, {
     initialFields: {
       alphTrade: ALPH_TRADE_CONTRACT_ID,
+      market: Buffer.from(market, "utf8").toString("hex"),
       type: positionType === PositionType.LONG ? 0n : 1n,
       colateral,
       leverage,
@@ -97,8 +100,8 @@ export const openPosition = async (
   });
 };
 
-export const getBTCPrice = async () => {
-  const result = await getValue("BTC/USDC");
+export const getPrice = async (market: string) => {
+  const result = await getValue(market);
   return result.value;
 };
 
