@@ -77,17 +77,17 @@ export const Positions: React.FC = () => {
   }, [setLiquidity, setOpenInterest]);
 
   return (
-    <div className="w-full">
-      <div className="h-[40px] px-4 flex items-center justify-between">
-        <div className="w-[180px]">position</div>
-        <div className="w-[180px]">colateral</div>
-        <div className="w-[180px]">leverage</div>
-        <div className="w-[180px]">size</div>
-        <div className="w-[180px]">entry price</div>
-        <div className="w-[180px]">liquidation price</div>
-        <div className="w-[180px]">value</div>
-        <div className="w-[180px]">p&l</div>
-        <div className="w-[180px]">close</div>
+    <div className="w-full overflow-x-auto">
+      <div className="w-fit h-[40px] px-4 flex shrink-0 items-center justify-between lg:w-full">
+        <div className="w-[140px] lg:grow">position</div>
+        <div className="w-[100px] lg:grow">colateral</div>
+        <div className="w-[100px] lg:grow">leverage</div>
+        <div className="w-[100px] lg:grow">size</div>
+        <div className="w-[120px] lg:grow">entry price</div>
+        <div className="w-[140px] lg:grow">liquidation price</div>
+        <div className="w-[80px] lg:grow">value</div>
+        <div className="w-[140px] lg:grow">p&l</div>
+        <div className="w-[100px] lg:grow">close</div>
       </div>
       {positions.map((position) => (
         <PositionDetails

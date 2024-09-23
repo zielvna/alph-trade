@@ -10,9 +10,11 @@ web3.setCurrentNodeProvider("http://127.0.0.1:22973");
 export default function Earn() {
   return (
     <>
-      <div className="h-full flex">
+      <div className="h-full flex flex-col shrink-0 lg:flex-row">
         <Stats />
-        <LiquiditySidePanel />
+        <div className="lg:w-[360px]">
+          <LiquiditySidePanel />
+        </div>
       </div>
       <Liquidations />
     </>

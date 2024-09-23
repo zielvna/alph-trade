@@ -92,7 +92,7 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="h-20 px-4 flex justify-between items-center">
+    <header className="h-20 px-4 flex flex-col justify-between items-center mb-4 sm:flex-row sm:mb-0">
       <div className="flex items-center gap-4">
         <h1 className="text-2xl">
           <Link href="/">alph trade</Link>
@@ -102,7 +102,7 @@ export const Header: React.FC = () => {
         </div>
       </div>
       <div className="flex gap-4">
-        <div className="w-[180px]">
+        <div className="w-[120px] md:w-[180px]">
           <Button
             scheme={Color.BLUE}
             size={ButtonSize.BIG}
@@ -111,7 +111,7 @@ export const Header: React.FC = () => {
             airdrop
           </Button>
         </div>
-        <div className="w-[180px]">
+        <div className="w-[120px] md:w-[180px]">
           <Button
             scheme={Color.BLACK}
             size={ButtonSize.BIG}

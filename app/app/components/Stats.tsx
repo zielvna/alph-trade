@@ -63,14 +63,14 @@ export const Stats: React.FC = () => {
 
   return (
     <div className="grow">
-      <div className="flex">
-        <div className="basis-full p-4 h-fit">
+      <div className="flex flex-col overflow-x-auto sm:flex-row">
+        <div className="grow p-4 h-fit">
           <p className="text-lg">total value locked</p>
           <p className="text-xl">
             ${formatNumber(Number(liquidity), Number(TOKEN_DECIMAL)).toFixed(2)}
           </p>
         </div>
-        <div className="basis-full p-4 h-fit">
+        <div className="grow p-4 h-fit">
           <p className="text-lg">lp token supply</p>
           <p className="text-xl">
             {formatNumber(Number(lpTokenSupply), Number(TOKEN_DECIMAL)).toFixed(
@@ -78,7 +78,7 @@ export const Stats: React.FC = () => {
             )}
           </p>
         </div>
-        <div className="basis-full p-4 h-fit">
+        <div className="grow p-4 h-fit">
           <p className="text-lg">lp token price</p>
           <p className="text-xl">
             $
@@ -88,7 +88,7 @@ export const Stats: React.FC = () => {
             ).toFixed(2)}
           </p>
         </div>
-        <div className="basis-full p-4 h-fit">
+        <div className="grow p-4 h-fit">
           <p className="text-lg">open interest</p>
           <p className="text-xl">
             $
@@ -98,7 +98,7 @@ export const Stats: React.FC = () => {
             ).toFixed(2)}
           </p>
         </div>
-        <div className="basis-full p-4 h-fit">
+        <div className="grow p-4 h-fit">
           <p className="text-lg">unrealized p&l</p>
           <p className="text-xl">
             {totalUnrealizedPnl >= 0 ? "+" : "-"}$

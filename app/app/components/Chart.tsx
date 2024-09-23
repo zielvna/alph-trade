@@ -77,19 +77,19 @@ const Chart: React.FC = () => {
   const parsedChange = change * 100 - 100;
 
   return (
-    <div className="flex flex-col gap-2 grow ml-4">
+    <div className="flex flex-col gap-2 grow">
       <div className="flex items-center justify-between gap-2">
         <div className="flex gap-2">
           {MARKETS.map((currentMarket, index) => (
             <div
               key={index}
-              className={`h-[32px] flex items-center gap-1 text-xl py-1 px-2 cursor-pointer border ${
+              className={`h-[32px] flex items-center gap-1 text-xl p-1 md:px-2 cursor-pointer border ${
                 currentMarket === market ? "border-black" : "border-white"
               }`}
               onClick={() => setMarket(currentMarket)}
             >
               <CoinIcon coin={marketToCoin(currentMarket) ?? Coin.USDC} />
-              {marketToCoin(currentMarket)}
+              <p className="hidden md:block">{marketToCoin(currentMarket)}</p>
             </div>
           ))}
         </div>

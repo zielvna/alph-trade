@@ -60,23 +60,25 @@ export const PositionDetails: React.FC<Props> = ({
 
   return (
     <div className="w-full">
-      <div className="h-[40px] px-4 flex items-center justify-between">
-        <div className={`w-[180px] flex gap-2 ${positionClass}`}>
+      <div className="w-fit h-[40px] px-4 flex items-center justify-between lg:w-full">
+        <div className={`w-[140px] flex gap-2 lg:grow ${positionClass}`}>
           <CoinIcon coin={marketToCoin(market) ?? Coin.USDC} />{" "}
           {marketToCoin(market)?.toUpperCase()} {positionType}
         </div>
-        <div className="w-[180px]">${colateral.toFixed(2)}</div>
-        <div className="w-[180px]">x{leverage}</div>
-        <div className="w-[180px]">${(colateral * leverage).toFixed(2)}</div>
-        <div className="w-[180px]">${entryPrice.toFixed(2)}</div>
-        <div className="w-[180px]">${liquidationPrice.toFixed(2)}</div>
-        <div className="w-[180px]">${value.toFixed(2)}</div>
-        <div className={`w-[180px] ${pnlClass}`}>
+        <div className="w-[100px] lg:grow">${colateral.toFixed(2)}</div>
+        <div className="w-[100px] lg:grow">x{leverage}</div>
+        <div className="w-[100px] lg:grow">
+          ${(colateral * leverage).toFixed(2)}
+        </div>
+        <div className="w-[120px] lg:grow">${entryPrice.toFixed(2)}</div>
+        <div className="w-[140px] lg:grow">${liquidationPrice.toFixed(2)}</div>
+        <div className="w-[80px] lg:grow">${value.toFixed(2)}</div>
+        <div className={`w-[140px] lg:grow ${pnlClass}`}>
           {pnl >= 0 ? "+" : "-"}${Math.abs(pnl).toFixed(2)} (
           {pnlPercentage >= 0 && "+"}
           {pnlPercentage.toFixed(2)}%)
         </div>
-        <div className="w-[180px]">
+        <div className="w-[100px] lg:grow">
           <div className="w-[80px]">
             <Button
               scheme={disabled ? Color.GRAY : Color.BLUE}
