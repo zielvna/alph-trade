@@ -1,0 +1,28 @@
+{
+  "version": "v3.6.2",
+  "name": "Liquidate",
+  "bytecodeTemplate": "01010300000005{1}0d0c{0}010f",
+  "fieldsSig": {
+    "names": [
+      "alphTrade",
+      "positionIndex"
+    ],
+    "types": [
+      "ALPHTrade",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false
+    ]
+  },
+  "functions": [
+    {
+      "name": "main",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "version": "v3.6.2",
+  "name": "Oracle",
+  "bytecode": "030240494094010002020017d3d219a3cb160014074254432f555344414c031601a1004a0f160014074554482f555344414c031601a1014a0816001408414c50482f555344414c031601a1024a010201000101021cd3a0e6c231160014074254432f555344414c04a00056024a13160014074554482f555344414c04a00156024a0b16001408414c50482f555344414c04a00256024a030c0c02",
+  "codeHash": "c39a68c97214dda87e93536d3d5f1b991a504ae68f0f168e70ec1ccbddff6a98",
+  "fieldsSig": {
+    "names": [
+      "btcPrice",
+      "ethPrice",
+      "alphPrice"
+    ],
+    "types": [
+      "U256",
+      "U256",
+      "U256"
+    ],
+    "isMutable": [
+      true,
+      true,
+      true
+    ]
+  },
+  "eventsSig": [],
+  "functions": [
+    {
+      "name": "setValue",
+      "paramNames": [
+        "key",
+        "value"
+      ],
+      "paramTypes": [
+        "ByteVec",
+        "U256"
+      ],
+      "paramIsMutable": [
+        false,
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "getValue",
+      "paramNames": [
+        "key"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": [
+        "OracleValue"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": []
+}

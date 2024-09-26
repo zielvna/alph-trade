@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Position",
+    "fieldNames": [
+      "owner",
+      "market",
+      "type",
+      "colateral",
+      "leverage",
+      "entryPrice",
+      "entryTimestamp"
+    ],
+    "fieldTypes": [
+      "Address",
+      "ByteVec",
+      "U256",
+      "U256",
+      "U256",
+      "U256",
+      "U256"
+    ],
+    "isMutable": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "OracleValue",
+    "fieldNames": [
+      "value",
+      "timestamp"
+    ],
+    "fieldTypes": [
+      "U256",
+      "U256"
+    ],
+    "isMutable": [
+      true,
+      true
+    ]
+  }
+]
