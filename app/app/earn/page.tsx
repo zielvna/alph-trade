@@ -4,8 +4,9 @@ import { web3 } from "@alephium/web3";
 import { LiquiditySidePanel } from "../components/LiquiditySidePanel";
 import { Stats } from "../components/Stats";
 import { Liquidations } from "../components/Liquidations";
+import { NODE_PROVIDER } from "../utils/consts";
 
-web3.setCurrentNodeProvider("http://127.0.0.1:22973");
+web3.setCurrentNodeProvider(NODE_PROVIDER);
 
 export default function Earn() {
   return (
