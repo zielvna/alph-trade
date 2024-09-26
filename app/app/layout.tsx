@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Comic_Neue } from "next/font/google";
 import { AlephiumWalletProvider } from "@alephium/web3-react";
-import { web3 } from "@alephium/web3";
 import { Header } from "./components/Header";
+import { Snackbars } from "./components/Snackbars";
+import { NETWORK } from "./utils/consts";
 
 const comicNeue = Comic_Neue({ weight: ["700"], subsets: ["latin"] });
 
@@ -11,8 +12,6 @@ export const metadata: Metadata = {
   title: "alph trade",
   description: "Crypto trading with leverage",
 };
-
-web3.setCurrentNodeProvider("http://127.0.0.1:22973");
 
 export default function RootLayout({
   children,
@@ -22,9 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${comicNeue.className} antialiased`}>
-        <AlephiumWalletProvider theme="retro" network="devnet">
+        <AlephiumWalletProvider
+          theme="retro"
+          network={NETWORK}
+          addressGroup={0}
+        >
           <Header />
           {children}
+          <Snackbars />
         </AlephiumWalletProvider>
       </body>
     </html>

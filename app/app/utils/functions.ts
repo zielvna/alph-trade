@@ -1,5 +1,6 @@
 import { Coin } from "../enums/coin";
 import { Market } from "../enums/market";
+import { useStore } from "../store/store";
 
 export const marketToCoin = (market: Market) => {
   switch (market) {
@@ -25,4 +26,13 @@ export const byteVecToMarket = (byteVec: string) => {
     default:
       return null;
   }
+};
+
+export const generateSnackbarId = () => {
+  return Math.round(Math.random() * 1000000000);
+};
+
+export const handleSnackbar = (message: string, txId?: string) => {
+  const id = generateSnackbarId();
+  useStore.getState().addSnackbar({ id, message, txId });
 };

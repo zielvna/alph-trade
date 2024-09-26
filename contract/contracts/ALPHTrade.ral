@@ -313,4 +313,9 @@ Contract ALPHTrade(
         
         return userPositions, indexes, positionsIndex
     }
+
+    @using(checkExternalCaller = false)
+    pub fn getValue(key: ByteVec) -> OracleValue {
+        return oracleId.getValue(key)
+    }
 }

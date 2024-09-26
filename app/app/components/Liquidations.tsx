@@ -17,7 +17,7 @@ import {
 } from "../utils/web3";
 import { useWallet } from "@alephium/web3-react";
 import { waitForTxConfirmation } from "@alephium/web3";
-import { byteVecToMarket } from "../utils/functions";
+import { byteVecToMarket, handleSnackbar } from "../utils/functions";
 import { Market } from "../enums/market";
 
 export const Liquidations: React.FC = () => {
@@ -42,6 +42,9 @@ export const Liquidations: React.FC = () => {
   const handleLiquidatePosition = async (positionIndex: bigint) => {
     if (signer && account) {
       const result = await liquidate(positionIndex, signer);
+
+      handleSnackbar("liquidating position", result.txId);
+
       await waitForTxConfirmation(result.txId, 1, 1000);
 
       const allPositions = await getAllPositions();

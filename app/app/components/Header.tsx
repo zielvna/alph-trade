@@ -15,6 +15,7 @@ import { useStore } from "../store/store";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Market } from "../enums/market";
+import { handleSnackbar } from "../utils/functions";
 
 export const Header: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
@@ -67,6 +68,9 @@ export const Header: React.FC = () => {
   const handleAirdrop = async () => {
     if (signer) {
       const result = await mint(10n * TOKEN_DENOMINATOR, signer);
+
+      handleSnackbar("claiming airdrop", result.txId);
+
       await waitForTxConfirmation(result.txId, 1, 1000);
 
       const balance = await balanceOf(USDC_CONTRACT_ID, account.address);
@@ -77,6 +81,8 @@ export const Header: React.FC = () => {
   const handleConnect = async () => {
     const account = await connect();
 
+    handleSnackbar("wallet connected");
+
     if (account) {
       const balance = await balanceOf(USDC_CONTRACT_ID, account.address);
       setBalance(balance);
@@ -86,13 +92,15 @@ export const Header: React.FC = () => {
   const handleDisconnect = async () => {
     await disconnect();
 
+    handleSnackbar("wallet disconnected");
+
     setPositions([]);
 
     setBalance(0n);
   };
 
   return (
-    <header className="h-20 px-4 flex flex-col justify-between items-center mb-4 sm:flex-row sm:mb-0">
+    <header className="h-20 px-4 flex flex-col justify-between items-center my-4 sm:flex-row sm:my-0">
       <div className="flex items-center gap-4">
         <h1 className="text-2xl">
           <Link href="/">alph trade</Link>
@@ -100,13 +108,18 @@ export const Header: React.FC = () => {
         <div className="text-lg">
           <Link href="/earn">earn</Link>
         </div>
+        <div className="text-lg">
+          <Link href="https://alph-trade-docs.vercel.app/" target="_blank">
+            docs
+          </Link>
+        </div>
       </div>
       <div className="flex gap-4">
         <div className="w-[120px] md:w-[180px]">
           <Button
-            scheme={Color.BLUE}
+            scheme={account ? Color.BLUE : Color.GRAY}
             size={ButtonSize.BIG}
-            onClick={() => handleAirdrop()}
+            onClick={() => (account ? handleAirdrop() : () => {})}
           >
             airdrop
           </Button>

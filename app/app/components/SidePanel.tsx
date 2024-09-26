@@ -29,6 +29,7 @@ import {
 import { formatNumber } from "../utils/ui";
 import { CoinIcon } from "./CoinIcon";
 import { Coin } from "../enums/coin";
+import { handleSnackbar } from "../utils/functions";
 
 export const SidePanel: React.FC = () => {
   const { account, signer } = useWallet();
@@ -69,6 +70,9 @@ export const SidePanel: React.FC = () => {
         BigInt(leverage),
         signer
       );
+
+      handleSnackbar("opening position", result.txId);
+
       await waitForTxConfirmation(result.txId, 1, 1000);
 
       const balance = await balanceOf(USDC_CONTRACT_ID, account.address);
@@ -118,9 +122,34 @@ export const SidePanel: React.FC = () => {
     Math.round(Number(colateral) * Number(TOKEN_DENOMINATOR))
   );
   const isAmountCorrect =
+    account &&
     parsedColateral >= MIN_COLATERAL &&
     parsedColateral <= balance &&
     Number(colateral) * leverage <= availableLiquidity;
+
+  const getOpenMessage = () => {
+    if (!account) {
+      return "connect wallet";
+    }
+
+    if (parsedColateral < MIN_COLATERAL) {
+      return "min colateral is $1";
+    }
+
+    if (parsedColateral > balance) {
+      return "insufficient balance";
+    }
+
+    if (Number(colateral) * leverage > availableLiquidity) {
+      return "insufficient liquidity";
+    }
+
+    return "open";
+  };
+
+  const onMaxClick = () => {
+    setColateral((Number(balance) / Number(TOKEN_DENOMINATOR)).toFixed(6));
+  };
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -158,10 +187,15 @@ export const SidePanel: React.FC = () => {
           />
           <CoinIcon coin={Coin.USDC} />
         </div>
-        balance:{" "}
-        {(Number(balance) / Number(TOKEN_DENOMINATOR)).toFixed(
-          Number(TOKEN_DECIMAL)
-        )}
+        <div>
+          balance:{" "}
+          {(Number(balance) / Number(TOKEN_DENOMINATOR)).toFixed(
+            Number(TOKEN_DECIMAL)
+          )}{" "}
+          <button className="inline-block" onClick={onMaxClick}>
+            [max]
+          </button>
+        </div>
       </div>
       <div>
         leverage
@@ -192,7 +226,7 @@ export const SidePanel: React.FC = () => {
         size={ButtonSize.BIG}
         onClick={isAmountCorrect ? handleOpenPosition : () => {}}
       >
-        open
+        {getOpenMessage()}
       </Button>
     </div>
   );

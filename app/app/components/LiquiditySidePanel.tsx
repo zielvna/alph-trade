@@ -27,6 +27,7 @@ import { formatNumber } from "../utils/ui";
 import { CoinIcon } from "./CoinIcon";
 import { Coin } from "../enums/coin";
 import { LiquidityType } from "../enums/liquidity-type";
+import { handleSnackbar } from "../utils/functions";
 
 export const LiquiditySidePanel: React.FC = () => {
   const { signer, account } = useWallet();
@@ -69,6 +70,9 @@ export const LiquiditySidePanel: React.FC = () => {
         BigInt(Number(amount) * Number(TOKEN_DENOMINATOR)),
         signer
       );
+
+      handleSnackbar("depositing liquidity", result.txId);
+
       await waitForTxConfirmation(result.txId, 1, 1000);
 
       const balance = await balanceOf(USDC_CONTRACT_ID, account.address);
@@ -89,6 +93,9 @@ export const LiquiditySidePanel: React.FC = () => {
         BigInt(Number(amount) * Number(TOKEN_DENOMINATOR)),
         signer
       );
+
+      handleSnackbar("withdrawing liquidity", result.txId);
+
       await waitForTxConfirmation(result.txId, 1, 1000);
 
       const balance = await balanceOf(USDC_CONTRACT_ID, account.address);
@@ -125,10 +132,44 @@ export const LiquiditySidePanel: React.FC = () => {
     formatNumber(Number(openInterest.total), Number(TOKEN_DECIMAL))
   );
   const isAmountCorrect =
+    account &&
     Number(amount) > 0 &&
     BigInt(Number(amount) * Number(TOKEN_DENOMINATOR)) <=
       (liquidityType === LiquidityType.DEPOSIT ? balance : lpBalance) &&
     Number(amount) < availableLiquidity;
+
+  const getOpenMessage = () => {
+    if (!account) {
+      return "connect wallet";
+    }
+
+    if (Number(amount) <= 0) {
+      return "amount is $0";
+    }
+
+    if (
+      BigInt(Math.round(Number(amount) * Number(TOKEN_DENOMINATOR))) >
+      (liquidityType === LiquidityType.DEPOSIT ? balance : lpBalance)
+    ) {
+      return "insufficient balance";
+    }
+
+    if (Number(amount) >= availableLiquidity) {
+      return "insufficient liquidity";
+    }
+
+    return liquidityType === LiquidityType.DEPOSIT ? "deposit" : "withdraw";
+  };
+
+  const onMaxClick = () => {
+    setAmount(
+      (
+        (liquidityType === LiquidityType.DEPOSIT
+          ? Number(balance)
+          : Number(lpBalance)) / Number(TOKEN_DENOMINATOR)
+      ).toFixed(6)
+    );
+  };
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -165,7 +206,12 @@ export const LiquiditySidePanel: React.FC = () => {
             }
           />
         </div>
-        balance: {parsedBalance}
+        <div>
+          balance: {parsedBalance}{" "}
+          <button className="inline-block" onClick={onMaxClick}>
+            [max]
+          </button>
+        </div>
       </div>
       <div className="flex flex-col gap-1">
         receive
@@ -192,7 +238,7 @@ export const LiquiditySidePanel: React.FC = () => {
             : () => {}
         }
       >
-        {liquidityType === LiquidityType.DEPOSIT ? "deposit" : "withdraw"}
+        {getOpenMessage()}
       </Button>
     </div>
   );

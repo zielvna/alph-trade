@@ -2,6 +2,12 @@ import { create } from "zustand";
 import { PositionWithIndex } from "../utils/types";
 import { Market } from "../enums/market";
 
+export type SnackbarType = {
+  id: number;
+  message: string;
+  txId?: string;
+};
+
 interface Store {
   balance: bigint;
   lpBalance: bigint;
@@ -20,6 +26,7 @@ interface Store {
   positions: PositionWithIndex[];
   allPositions: PositionWithIndex[];
   market: Market;
+  snackbars: SnackbarType[];
   setBalance: (balance: bigint) => void;
   setLpBalance: (lpBalance: bigint) => void;
   setCurrentPrice: (market: Market, entryPrice: bigint) => void;
@@ -33,6 +40,8 @@ interface Store {
   setPositions: (positions: PositionWithIndex[]) => void;
   setAllPositions: (positions: PositionWithIndex[]) => void;
   setMarket: (market: Market) => void;
+  addSnackbar: (snackbar: SnackbarType) => void;
+  removeSnackbar: (id: number) => void;
 }
 
 export const useStore = create<Store>((set) => ({
@@ -53,6 +62,7 @@ export const useStore = create<Store>((set) => ({
   positions: [],
   allPositions: [],
   market: Market.BTC,
+  snackbars: [],
   setBalance: (balance) =>
     set(() => ({
       balance,
@@ -88,5 +98,13 @@ export const useStore = create<Store>((set) => ({
   setMarket: (market) =>
     set(() => ({
       market,
+    })),
+  addSnackbar: (snackbar) =>
+    set(({ snackbars }) => ({
+      snackbars: [...snackbars, snackbar],
+    })),
+  removeSnackbar: (id) =>
+    set(({ snackbars }) => ({
+      snackbars: snackbars.filter((snackbar) => snackbar.id !== id),
     })),
 }));

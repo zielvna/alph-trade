@@ -542,6 +542,10 @@ export namespace ALPHTradeTypes {
         ]
       >;
     };
+    getValue: {
+      params: CallContractParams<{ key: HexString }>;
+      result: CallContractResult<OracleValue>;
+    };
   }
   export type CallMethodParams<T extends keyof CallMethodTable> =
     CallMethodTable[T]["params"];
@@ -647,6 +651,10 @@ export namespace ALPHTradeTypes {
     };
     getAllPositions: {
       params: SignExecuteContractMethodParams<{ offset: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
+    getValue: {
+      params: SignExecuteContractMethodParams<{ key: HexString }>;
       result: SignExecuteScriptTxResult;
     };
   }
@@ -1461,6 +1469,20 @@ class Factory extends ContractFactory<
     > => {
       return testMethod(this, "getAllPositions", params, getContractByCodeHash);
     },
+    getValue: async (
+      params: TestContractParams<
+        ALPHTradeTypes.Fields,
+        { key: HexString },
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
+    ): Promise<
+      TestContractResult<
+        OracleValue,
+        { positions?: Map<bigint, Position>; markets?: Map<bigint, HexString> }
+      >
+    > => {
+      return testMethod(this, "getValue", params, getContractByCodeHash);
+    },
   };
 }
 
@@ -1468,8 +1490,8 @@ class Factory extends ContractFactory<
 export const ALPHTrade = new Factory(
   Contract.fromJson(
     ALPHTradeContractJson,
-    "=28-9=1+c=1-1=1+e5=1+82d=3-1+8=2-2+d5=2-2+25=1-2=1+c8=2-2+7d=2-4+4d=1-1+ba0=2-1+ad=1-1+1f=1-2=1-3+333=2+c75=1-1+10=1-3+a06=165-1+8=72+7a7e0214696e73657274206174206d617020706174683a2000=36-2+80=53-1+f=93-1+7=52+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+f=40+7a7e0214696e73657274206174206d617020706174683a2000=186+7a7e021472656d6f7665206174206d617020706174683a2000=36-2+8d=8099-1+2=40+7a7e0214696e73657274206174206d617020706174683a2000=48-2+84=224+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+f=40+7a7e0214696e73657274206174206d617020706174683a2000=186+7a7e021472656d6f7665206174206d617020706174683a2000=3500",
-    "ac5526240401e239653ba3ac3107842ee2879a14de7770d9300a7ed9dfa0abd3",
+    "=28-2+9c=2-6+e5=2-2+2d=3-1+8=2-2+d5=2-1+25=1-3=1+c8=2-2+7d4b4d=2-2+a0=2-2+ad=2-9=1+2=2-2+33=1-1=1-1+c7=1-1+410=1+a06=1+a1d=165-1+8=72+7a7e0214696e73657274206174206d617020706174683a2000=36-2+80=53-1+f=93-1+7=52+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+f=40+7a7e0214696e73657274206174206d617020706174683a2000=186+7a7e021472656d6f7665206174206d617020706174683a2000=36-2+8d=8099-1+2=40+7a7e0214696e73657274206174206d617020706174683a2000=48-2+84=224+7a7e021472656d6f7665206174206d617020706174683a2000=21-1+f=40+7a7e0214696e73657274206174206d617020706174683a2000=186+7a7e021472656d6f7665206174206d617020706174683a2000=3546",
+    "91b967c112622f125e989c0994da385c21744fe86b401f34030ef4f5d6511906",
     AllStructs
   )
 );
@@ -1718,6 +1740,17 @@ export class ALPHTradeInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
+    getValue: async (
+      params: ALPHTradeTypes.CallMethodParams<"getValue">
+    ): Promise<ALPHTradeTypes.CallMethodResult<"getValue">> => {
+      return callMethod(
+        ALPHTrade,
+        this,
+        "getValue",
+        params,
+        getContractByCodeHash
+      );
+    },
   };
 
   transact = {
@@ -1820,6 +1853,11 @@ export class ALPHTradeInstance extends ContractInstance {
       params: ALPHTradeTypes.SignExecuteMethodParams<"getAllPositions">
     ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getAllPositions">> => {
       return signExecuteMethod(ALPHTrade, this, "getAllPositions", params);
+    },
+    getValue: async (
+      params: ALPHTradeTypes.SignExecuteMethodParams<"getValue">
+    ): Promise<ALPHTradeTypes.SignExecuteMethodResult<"getValue">> => {
+      return signExecuteMethod(ALPHTrade, this, "getValue", params);
     },
   };
 

@@ -1,17 +1,29 @@
-import Contracts from "../../../contract/contracts.json";
-import { ALPHTrade, Oracle, Token } from "../artifacts/ts";
+import TESTNET_CONTRACTS from "../../../contract/deploys/testnet.json";
+import DEVNET_CONTRACTS from "../../../contract/deploys/devnet.json";
+import MAINNET_CONTRACTS from "../../../contract/deploys/mainnet.json";
+import { ALPHTrade, Token } from "../artifacts/ts";
 import { Market } from "../enums/market";
 
-export const ALPH_TRADE_ADDRESS = Contracts.alphTradeAddress;
-export const ALPH_TRADE_CONTRACT_ID = Contracts.alphTradeContractId;
-export const USDC_ADDRESS = Contracts.USDCAddress;
-export const USDC_CONTRACT_ID = Contracts.USDCContractId;
-export const ORACLE_ADDRESS = Contracts.oracleAddress;
-export const ORACLE_CONTRACT_ID = Contracts.oracleContractId;
+export const NETWORK = process.env.NEXT_PUBLIC_NETWORK as
+  | "devnet"
+  | "testnet"
+  | "mainnet";
+export const NODE_PROVIDER = process.env.NEXT_PUBLIC_NODE_PROVIDER as string;
+console.log(NETWORK, NODE_PROVIDER);
+
+const CONTRACTS = {
+  devnet: DEVNET_CONTRACTS,
+  testnet: TESTNET_CONTRACTS,
+  mainnet: MAINNET_CONTRACTS,
+};
+
+export const ALPH_TRADE_ADDRESS = CONTRACTS[NETWORK].alphTradeAddress;
+export const ALPH_TRADE_CONTRACT_ID = CONTRACTS[NETWORK].alphTradeContractId;
+export const USDC_ADDRESS = CONTRACTS[NETWORK].USDCAddress;
+export const USDC_CONTRACT_ID = CONTRACTS[NETWORK].USDCContractId;
 
 export const ALPH_TRADE = ALPHTrade.at(ALPH_TRADE_ADDRESS);
 export const USDC = Token.at(USDC_ADDRESS);
-export const ORACLE = Oracle.at(ORACLE_ADDRESS);
 
 export const TOKEN_DECIMAL = 6n;
 export const TOKEN_DENOMINATOR = 10n ** TOKEN_DECIMAL;
@@ -36,3 +48,5 @@ export const TRADING_VIEW_TICKER = {
   [Market.ETH]: "BINANCE:ETHUSD",
   [Market.ALPH]: "MEXC:ALPHUSDT",
 };
+
+export const SNACKBAR_TIMEOUT = 5000;

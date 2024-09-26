@@ -20,7 +20,7 @@ import {
   getPositions,
 } from "../utils/web3";
 import { PositionDetailsType } from "../enums/position-details-type";
-import { byteVecToMarket } from "../utils/functions";
+import { byteVecToMarket, handleSnackbar } from "../utils/functions";
 import { Market } from "../enums/market";
 
 export const Positions: React.FC = () => {
@@ -48,6 +48,9 @@ export const Positions: React.FC = () => {
   const handleClosePosition = async (positionIndex: bigint) => {
     if (signer) {
       const result = await closePosition(positionIndex, signer);
+
+      handleSnackbar("closing position", result.txId);
+
       await waitForTxConfirmation(result.txId, 1, 1000);
 
       const balance = await balanceOf(USDC_CONTRACT_ID, account.address);

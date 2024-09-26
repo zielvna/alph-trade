@@ -22,13 +22,11 @@ export const main = async () => {
   console.log('alph trade deployed')
 
   await fs.writeFile(
-    './contracts.json',
+    './deploys/devnet.json',
     JSON.stringify({
       USDCAddress: USDC.address,
-      oracleAddress: oracle.address,
       alphTradeAddress: alphTrade.address,
       USDCContractId: USDC.contractId,
-      oracleContractId: oracle.contractId,
       alphTradeContractId: alphTrade.contractId
     })
   )

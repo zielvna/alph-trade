@@ -4,8 +4,9 @@ import Chart from "./components/Chart";
 import { SidePanel } from "./components/SidePanel";
 import { Positions } from "./components/Positions";
 import { web3 } from "@alephium/web3";
+import { NODE_PROVIDER } from "./utils/consts";
 
-web3.setCurrentNodeProvider("http://127.0.0.1:22973");
+web3.setCurrentNodeProvider(NODE_PROVIDER);
 
 export default function Home() {
   return (

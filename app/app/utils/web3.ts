@@ -10,7 +10,6 @@ import {
   ALPH_TRADE,
   ALPH_TRADE_CONTRACT_ID,
   MAX_VALUE,
-  ORACLE,
   USDC_CONTRACT_ID,
 } from "./consts";
 import { PositionWithIndex } from "./types";
@@ -107,7 +106,7 @@ export const getPrice = async (market: string) => {
 
 export const getValue = async (key: string) => {
   const result = (
-    await ORACLE.view.getValue({
+    await ALPH_TRADE.view.getValue({
       args: { key: Buffer.from(key, "utf8").toString("hex") },
     })
   ).returns;
