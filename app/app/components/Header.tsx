@@ -81,9 +81,9 @@ export const Header: React.FC = () => {
   const handleConnect = async () => {
     const account = await connect();
 
-    handleSnackbar("wallet connected");
-
     if (account) {
+      handleSnackbar("wallet connected");
+
       const balance = await balanceOf(USDC_CONTRACT_ID, account.address);
       setBalance(balance);
     }

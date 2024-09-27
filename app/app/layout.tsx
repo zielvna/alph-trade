@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${comicNeue.className} antialiased`}>
         <AlephiumWalletProvider
-          theme="retro"
+          theme="minimal"
           network={NETWORK}
           addressGroup={0}
         >
