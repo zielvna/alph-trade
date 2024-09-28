@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Color } from "../enums/color";
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -17,14 +18,24 @@ export const Button: React.FC<Props> = ({
   size,
   ...props
 }) => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const sizeClass = size === ButtonSize.BIG ? "h-[40px]" : "h-[30px]";
 
   return (
-    <button
-      className={`w-full bg-${scheme} text-white text-lg ${sizeClass}`}
-      {...props}
-    >
-      {children}
-    </button>
+    <>
+      {isClient && (
+        <button
+          className={`w-full bg-${scheme} text-white text-lg ${sizeClass}`}
+          {...props}
+        >
+          {children}
+        </button>
+      )}
+    </>
   );
 };

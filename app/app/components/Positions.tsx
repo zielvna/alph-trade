@@ -114,7 +114,8 @@ export const Positions: React.FC = () => {
             ),
             Number(PRICE_DECIMAL)
           )}
-          key={position.entryTimestamp}
+          entryTimestamp={Number(position.entryTimestamp)}
+          key={position.index}
           onClose={() => handleClosePosition(position.index)}
         />
       ))}

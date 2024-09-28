@@ -22,6 +22,7 @@ interface Props {
   leverage: number;
   entryPrice: number;
   currentPrice: number;
+  entryTimestamp: number;
   onClose: () => void;
 }
 
@@ -33,21 +34,26 @@ export const PositionDetails: React.FC<Props> = ({
   leverage,
   entryPrice,
   currentPrice,
+  entryTimestamp,
   onClose,
 }) => {
   const positionClass =
     positionType === PositionType.LONG ? "text-green" : "text-red";
-  const liquidationPrice = calculateLiquidationPrice(
-    positionType,
-    entryPrice,
-    leverage
-  );
   const value = calculateValue(
     positionType,
     entryPrice,
     currentPrice,
     colateral,
-    leverage
+    leverage,
+    entryTimestamp,
+    Date.now()
+  );
+  const liquidationPrice = calculateLiquidationPrice(
+    positionType,
+    entryPrice,
+    leverage,
+    value,
+    colateral
   );
   const pnl = calculatePnl(colateral, value);
   const pnlPercentage = calculatePnlPercentage(colateral, value);

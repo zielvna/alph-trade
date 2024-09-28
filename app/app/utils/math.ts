@@ -1,15 +1,17 @@
 import { PositionType } from "../enums/position-type";
-import { TOKEN_DENOMINATOR } from "./consts";
+import { HOUR_IN_MS, TOKEN_DENOMINATOR } from "./consts";
 
 export const calculateLiquidationPrice = (
   positionType: PositionType,
   entryPrice: number,
-  leverage: number
+  leverage: number,
+  value: number,
+  colateral: number
 ) => {
   if (positionType === PositionType.LONG) {
-    return entryPrice - entryPrice / leverage;
+    return entryPrice - ((entryPrice / leverage) * value) / colateral;
   } else {
-    return entryPrice + entryPrice / leverage;
+    return entryPrice + ((entryPrice / leverage) * value) / colateral;
   }
 };
 
@@ -18,17 +20,25 @@ export const calculateValue = (
   entryPrice: number,
   currentPrice: number,
   colateral: number,
-  leverage: number
+  leverage: number,
+  entryTimestamp: number,
+  closeTimestamp: number
 ) => {
+  const positionSize = colateral * leverage;
+  const borrowCost =
+    ((closeTimestamp - entryTimestamp) / HOUR_IN_MS) * 0.00005 * positionSize;
+
   if (positionType === PositionType.LONG) {
     return (
-      colateral -
-      (1 - (currentPrice * 0.995) / entryPrice) * colateral * leverage
+      colateral +
+      ((currentPrice * 0.995) / entryPrice - 1) * positionSize -
+      borrowCost
     );
   } else {
     return (
-      colateral -
-      ((currentPrice * 1.005) / entryPrice - 1) * colateral * leverage
+      colateral +
+      (1 - (currentPrice * 1.005) / entryPrice) * positionSize -
+      borrowCost
     );
   }
 };

@@ -93,7 +93,8 @@ export const Liquidations: React.FC = () => {
             ),
             Number(PRICE_DECIMAL)
           )}
-          key={position.entryTimestamp}
+          entryTimestamp={Number(position.entryTimestamp)}
+          key={position.index}
           onClose={() => handleLiquidatePosition(position.index)}
         />
       ))}

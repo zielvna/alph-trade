@@ -9,7 +9,6 @@ export const NETWORK = process.env.NEXT_PUBLIC_NETWORK as
   | "testnet"
   | "mainnet";
 export const NODE_PROVIDER = process.env.NEXT_PUBLIC_NODE_PROVIDER as string;
-console.log(NETWORK, NODE_PROVIDER);
 
 const CONTRACTS = {
   devnet: DEVNET_CONTRACTS,
@@ -50,3 +49,4 @@ export const TRADING_VIEW_TICKER = {
 };
 
 export const SNACKBAR_TIMEOUT = 5000;
+export const HOUR_IN_MS = 60 * 60 * 1000;

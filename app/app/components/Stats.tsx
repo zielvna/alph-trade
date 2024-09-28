@@ -56,7 +56,9 @@ export const Stats: React.FC = () => {
           Number(PRICE_DECIMAL)
         ),
         formatNumber(Number(position.colateral), Number(TOKEN_DECIMAL)),
-        Number(position.leverage)
+        Number(position.leverage),
+        Number(position.entryTimestamp),
+        Date.now()
       ),
     0
   );

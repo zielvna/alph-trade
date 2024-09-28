@@ -12,21 +12,16 @@ import {
 } from "../utils/consts";
 import { balanceOf, getPrice, mint } from "../utils/web3";
 import { useStore } from "../store/store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { Market } from "../enums/market";
 import { handleSnackbar } from "../utils/functions";
 
 export const Header: React.FC = () => {
-  const [isClient, setIsClient] = useState(false);
   const { market, setBalance, setLpBalance, setPositions, setCurrentPrice } =
     useStore();
   const { connect, disconnect } = useConnect();
   const { account, signer } = useWallet();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   useEffect(() => {
     const updateBalance = async () => {
@@ -132,7 +127,7 @@ export const Header: React.FC = () => {
               account?.address ? handleDisconnect() : handleConnect()
             }
           >
-            {isClient && account?.address
+            {account?.address
               ? formatAddress(account.address)
               : "connect wallet"}
           </Button>
