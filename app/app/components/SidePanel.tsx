@@ -55,7 +55,9 @@ export const SidePanel: React.FC = () => {
   const liquidationPrice = calculateLiquidationPrice(
     positionType,
     formatNumber(Number(entryPrice), Number(PRICE_DECIMAL)),
-    leverage
+    leverage,
+    1,
+    1
   );
 
   const handleOpenPosition = async () => {

@@ -26,7 +26,9 @@ export const calculateValue = (
 ) => {
   const positionSize = colateral * leverage;
   const borrowCost =
-    ((closeTimestamp - entryTimestamp) / HOUR_IN_MS) * 0.00005 * positionSize;
+    Math.ceil((closeTimestamp - entryTimestamp) / HOUR_IN_MS) *
+    0.00005 *
+    positionSize;
 
   if (positionType === PositionType.LONG) {
     return (
