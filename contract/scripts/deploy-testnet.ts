@@ -36,9 +36,9 @@ export const main = async () => {
     })
   )
 
-  await mint(USDC, 1000n * ONE_TOKEN, signer)
+  await mint(USDC, 10000n * ONE_TOKEN, signer)
   await sleep(30000)
-  await deposit(alphTrade, 1000n * ONE_TOKEN, signer)
+  await deposit(alphTrade, 10000n * ONE_TOKEN, signer)
 
   console.log('deposited liquidity')
 }

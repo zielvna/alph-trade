@@ -218,7 +218,7 @@ Contract ALPHTrade(
         assert!(value <= toI256!(position.colateral) * LIQUIDATION_TRESHOLD_NOMINATOR / LIQUIDATION_TRESHOLD_DENOMINATOR, Error.PositionValueAboveLiquidationThreshold)
 
         let liquidationFee = position.colateral * LIQUIDATION_FEE_NOMINATOR / LIQUIDATION_FEE_DENOMINATOR
-        liquidity = liquidity + position.colateral - toU256!(value) - liquidationFee
+        liquidity = liquidity + position.colateral - liquidationFee
         removePosition(positionIndex)
         positionsIndex = positionsIndex - 1
         let positionSize = position.colateral * position.leverage
