@@ -6,7 +6,11 @@ sidebar_position: 1
 
 # Overview
 
+![Logo](../static/img/logo.png)
+
 **alph trade** (lowercase) is a synthetic perpetual futures exchange. Traders can open long or short positions on three different tokens: **BTC**, **ETH**, and **ALPH** (with more to come in the future) with up to **20x leverage**. Liquidity providers can deposit tokens into the liquidity pool to earn fees, as well as profit or loss (P&L) from the positions traders open.
+
+![Logo](../static/img/overview.png)
 
 ## Oracle
 
