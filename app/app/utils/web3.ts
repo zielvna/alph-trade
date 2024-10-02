@@ -183,5 +183,6 @@ export const liquidate = async (
       alphTrade: ALPH_TRADE_CONTRACT_ID,
       positionIndex,
     },
+    attoAlphAmount: DUST_AMOUNT,
   });
 };
